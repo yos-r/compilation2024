@@ -1,0 +1,45 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Lexical w/o execution",
+            "type": "shell",
+            "command": "cd ${fileDirname} && flex ${fileBasenameNoExtension}.l"
+        },
+        {
+            "label": "Lexical w/ execution",
+            "type": "shell",
+            "command": "cd ${fileDirname} && flex ${fileBasenameNoExtension}.l  && gcc lex.yy.c -o 0000 && ./0000",
+            
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "isBuildCommand": true
+        },
+        {
+            "label": "Lexical w/ input file",
+            "type": "shell",
+            "command": "cd ${fileDirname} && flex ${fileBasenameNoExtension}.l  && gcc lex.yy.c -o 0000 && ./0000 input.txt",
+            
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "isBuildCommand": true
+        },
+        {
+            "label": "Syntax w/ execution",
+            "type": "shell",
+            "command": "cd ${fileDirname} && yacc -d ${fileBasenameNoExtension}.y && gcc y.tab.c -o 0000 && ./0000 ",
+            "problemMatcher": []
+        },
+        {
+            "label": "Syntax + Lexical",
+            "type": "shell",
+            "command": "cd ${fileDirname} && flex ${fileBasenameNoExtension}.l && yacc -d ${fileBasenameNoExtension}.y && gcc y.tab.c -o 0000 && ./0000 "
+        }
+    ]
+}
