@@ -21,7 +21,6 @@ id [a-zA-Z]([a-zA-Z]|[0-9])*
 {area} {return AREA; }
 {network} {return NETWORK;}
 {id} {return ID;}
-
 {nb} {return NB;}
 {point} {return POINT;}
 [$] {return FIN;}

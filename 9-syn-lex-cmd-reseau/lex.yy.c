@@ -788,28 +788,28 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 25 "file.l"
+#line 24 "file.l"
 {return NB;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 26 "file.l"
+#line 25 "file.l"
 {return POINT;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 27 "file.l"
+#line 26 "file.l"
 {return FIN;}
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 28 "file.l"
+#line 27 "file.l"
 
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 29 "file.l"
+#line 28 "file.l"
 ECHO;
 	YY_BREAK
 #line 816 "lex.yy.c"
@@ -1817,5 +1817,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 29 "file.l"
+#line 28 "file.l"
 
