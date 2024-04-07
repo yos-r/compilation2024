@@ -1,0 +1,17 @@
+Interpréteur d'expression mathématiques:
++, - , * , /
+file.l et file.y
+enrichir avec des actions semantiques pour l'evaluation
+
+Interpréteur d'instructions d'affectation, conditions, et itérations
+- lex et syn
+- actions semantiques: evaluer expression
+- detection des erreurs syntaxiques
+- detecter boucle infiine
+- erreur de type
+
+sujet 2:
+Interpréteur de requetes sql
+- lex et syn
+- actions sem: - calcul du nombre de champ a selectionner dans la requete selectionner
+- detecter les erreurs de type
