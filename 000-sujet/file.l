@@ -15,11 +15,13 @@ parferm ")"
 ("INTO"|"into") {return INTO;}
 ("WHERE"|"where") {return WHERE;}
 ("FROM"|"from") {return FROM;}
-[0-9]+ {yylval=atoi(yytext); return NB;}
+("TABLE"|"table") {return TABLE;}
+("INT"|"DATE") {return TYPE;}
+[0-9]+ {yylval.intValue=atoi(yytext); return NB;}
 ("=="|"!="|"<>"|"<="|">="|"<"|">") {return COMP;}
 {parferm} {return PARFERM;}
 {parouv} {return PAROUV;}
-{id} {return ID;}
+{id} {yylval.stringValue = strdup(yytext); return ID;}
 [,|.] {return yytext[0];}
 [$] {return FIN;}
 [\n] return 0;

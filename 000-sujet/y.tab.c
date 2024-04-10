@@ -69,11 +69,61 @@
 #line 2 "file.y"
 
 #include<stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 int yylex(void); 
 int yyerror(char*s);
-int champs=0;
 
-#line 77 "y.tab.c"
+int champs=0;
+int colonnes=0;
+#define MAX_STRINGS 100 // Maximum number of strings in the array
+#define MAX_LENGTH 50   // Maximum length of each string
+
+char* strings[MAX_STRINGS]; // Array of pointers to strings
+int num_strings = 0;
+
+int is_string_in_array(char* strings[],char* str,int num_strings) {
+    for (int i = 0; i < num_strings; i++) {
+        if (strcmp(strings[i], str) == 0) {
+            return 1; // String found in the array
+        }
+    }
+    return 0; // String not found in the array
+}
+
+// Function to add a string to the array if it's not already present
+void add_string(char* strings[], char* str,int num_strings) {
+    if (num_strings < MAX_STRINGS) {
+        if (!is_string_in_array(strings,str,num_strings)) {
+            strings[num_strings] = strdup(str);
+            num_strings++;
+            printf("numstrings %d ",num_strings);
+
+            printf("Added '%s' to the array.\n", str);
+        } else {
+            printf("String '%s' already exists in the array.\n", str);
+        }
+    } else {
+        printf("Array is full. Cannot add '%s'.\n", str);
+    }
+}
+void display_strings(char* strings[], int num_strings) {
+    printf("Strings in the array:\n");
+    for (int i = 0; i < num_strings; i++) {
+        printf("%s\n", strings[i]);
+    }
+}
+void empty_array(char* strings[] ,int numstrings) {
+    // Free memory allocated for each string
+    for (int i = 0; i < num_strings; i++) {
+        free(strings[i]);
+        strings[i] = NULL; // Optional: Set pointers to NULL for safety
+    }
+    num_strings = 0; // Reset the array size to zero
+}
+
+#line 127 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -132,7 +182,9 @@ extern int yydebug;
     NB = 266,
     CREATE = 267,
     INSERT = 268,
-    INTO = 269
+    INTO = 269,
+    TABLE = 270,
+    TYPE = 271
   };
 #endif
 /* Tokens.  */
@@ -148,10 +200,23 @@ extern int yydebug;
 #define CREATE 267
 #define INSERT 268
 #define INTO 269
+#define TABLE 270
+#define TYPE 271
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 59 "file.y"
+
+    int intValue;
+    float floatValue;
+    char *stringValue;
+
+#line 217 "y.tab.c"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -465,21 +530,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  5
+#define YYFINAL  7
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   14
+#define YYLAST   31
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  17
+#define YYNTOKENS  19
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  3
+#define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  5
+#define YYNRULES  8
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  16
+#define YYNSTATES  28
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   269
+#define YYMAXUTOK   271
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -495,8 +560,8 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,    16,     2,    15,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,    18,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,    17,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -517,14 +582,15 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13,    14
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    23,    23,    25,    27,    28
+       0,    82,    82,    84,    86,    89,    90,    91,    92
 };
 #endif
 
@@ -535,7 +601,8 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "ID", "FIN", "PAROUV", "PARFERM",
   "SELECT", "FROM", "WHERE", "COMP", "NB", "CREATE", "INSERT", "INTO",
-  "'.'", "','", "$accept", "CMD", "listeselect", YY_NULLPTR
+  "TABLE", "TYPE", "';'", "','", "$accept", "CMD", "listecreation",
+  "listeselect", YY_NULLPTR
 };
 #endif
 
@@ -545,11 +612,11 @@ static const char *const yytname[] =
 static const yytype_int16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,    46,    44
+     265,   266,   267,   268,   269,   270,   271,    59,    44
 };
 # endif
 
-#define YYPACT_NINF (-9)
+#define YYPACT_NINF (-13)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -563,8 +630,9 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -6,    -1,     3,    -9,    -8,    -9,     1,     2,     6,    -4,
-      -9,    -9,     7,     4,     8,    -9
+      -2,    -1,   -12,     6,   -13,    -4,     4,   -13,   -13,     5,
+       8,     7,     0,   -13,    12,    13,     1,    -5,     9,   -13,
+      14,    17,    10,   -13,    15,    18,   -13,   -13
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -572,20 +640,21 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     4,     0,     1,     0,     0,     0,     0,
-       2,     5,     0,     0,     0,     3
+       0,     0,     0,     0,     7,     0,     0,     1,     2,     0,
+       0,     0,     0,     8,     0,     0,     0,     0,     0,     5,
+       0,     0,     0,     4,     0,     0,     6,     3
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -9,    -9,    -9
+     -13,   -13,   -13,   -13
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     4
+      -1,     3,    17,     5
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -593,34 +662,39 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       6,     1,     3,     5,     9,    12,    10,     7,     8,    11,
-      13,     0,    15,     0,    14
+       8,    20,     4,     6,     9,     1,     7,    11,    12,    15,
+       2,    13,    14,    21,    10,    16,    18,    19,    23,    22,
+      24,     0,    27,     0,     0,     0,     0,    25,     0,     0,
+       0,    26
 };
 
 static const yytype_int8 yycheck[] =
 {
-       8,     7,     3,     0,     3,     9,     4,    15,    16,     3,
-       3,    -1,     4,    -1,    10
+       4,     6,     3,    15,     8,     7,     0,     3,     3,     9,
+      12,     3,     5,    18,    18,     3,     3,    16,     4,    10,
+       3,    -1,     4,    -1,    -1,    -1,    -1,    17,    -1,    -1,
+      -1,    16
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     7,    18,     3,    19,     0,     8,    15,    16,     3,
-       4,     3,     9,     3,    10,     4
+       0,     7,    12,    20,     3,    22,    15,     0,     4,     8,
+      18,     3,     3,     3,     5,     9,     3,    21,     3,    16,
+       6,    18,    10,     4,     3,    17,    16,     4
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    17,    18,    18,    19,    19
+       0,    19,    20,    20,    20,    21,    21,    22,    22
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     4,     8,     1,     3
+       0,     2,     3,     9,     7,     2,     4,     1,     3
 };
 
 
@@ -1316,31 +1390,49 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 24 "file.y"
+#line 83 "file.y"
 {printf(" champs selectionnes = %d \n",champs);}
-#line 1322 "y.tab.c"
+#line 1396 "y.tab.c"
     break;
 
   case 3:
-#line 26 "file.y"
-{printf(" champs selectionnes = %d",champs);}
-#line 1328 "y.tab.c"
+#line 85 "file.y"
+{printf(" champs selectionnes = %d \n",champs);}
+#line 1402 "y.tab.c"
     break;
 
   case 4:
-#line 27 "file.y"
-                 {champs+=1;}
-#line 1334 "y.tab.c"
+#line 87 "file.y"
+{printf(" colonnes de la table = %d \n",colonnes);}
+#line 1408 "y.tab.c"
     break;
 
   case 5:
-#line 28 "file.y"
-                   {champs+=1;}
-#line 1340 "y.tab.c"
+#line 89 "file.y"
+                        {colonnes+=1;}
+#line 1414 "y.tab.c"
+    break;
+
+  case 6:
+#line 90 "file.y"
+                            {colonnes+=1;}
+#line 1420 "y.tab.c"
+    break;
+
+  case 7:
+#line 91 "file.y"
+                 {champs+=1; add_string(strings, (yyvsp[0].stringValue), num_strings); num_strings++;}
+#line 1426 "y.tab.c"
+    break;
+
+  case 8:
+#line 92 "file.y"
+                   {champs+=1;add_string(strings, (yyvsp[0].stringValue), num_strings);num_strings++;}
+#line 1432 "y.tab.c"
     break;
 
 
-#line 1344 "y.tab.c"
+#line 1436 "y.tab.c"
 
       default: break;
     }
@@ -1572,13 +1664,19 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 29 "file.y"
+#line 94 "file.y"
+
 
 #include "lex.yy.c" 
-int yyerror(char *s){printf("%s \n",s);return 0;}
+int yyerror(char *s){printf("erreur syntaxique %s \n",s);return 0;}
 int main(int argc, char *argv[]){
     ++argv; --argc;
 if ( argc > 0 ) yyin = fopen( argv[0], "r" );
 else yyin = stdin;
-for(int i=0;i<2;i++) {yyparse(); champs=0;}; /* specifier le nombre de lignes a traiter*/ 
+for(int i=0;i<2;i++) {yyparse(); champs=0;colonnes=0;empty_array(strings,num_strings);num_strings=0;};
+/* test des fonctions de maniulation des chaines/*/
+/* char* strings[] = {"Hello", "World", "OpenAI", "ChatGPT"}; */
+/* display_strings(strings, num_strings); //marche  */
+/* printf("numstrings %d ",num_strings); */
+/* printf(" %d vc: ",is_string_in_array(strings,"OpenAI",4)); */
 return 0;}

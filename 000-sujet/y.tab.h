@@ -60,7 +60,9 @@ extern int yydebug;
     NB = 266,
     CREATE = 267,
     INSERT = 268,
-    INTO = 269
+    INTO = 269,
+    TABLE = 270,
+    TYPE = 271
   };
 #endif
 /* Tokens.  */
@@ -76,10 +78,23 @@ extern int yydebug;
 #define CREATE 267
 #define INSERT 268
 #define INTO 269
+#define TABLE 270
+#define TYPE 271
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 59 "file.y"
+
+    int intValue;
+    float floatValue;
+    char *stringValue;
+
+#line 95 "y.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
