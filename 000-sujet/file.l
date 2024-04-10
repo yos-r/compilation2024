@@ -1,18 +1,27 @@
 %option noyywrap
+/* SUJET SQL*/
 %{
 #include <stdio.h>
 #include <string.h>
 #include "y.tab.h"
 %}
-sql "sql"
 id [a-zA-Z]([a-zA-Z]|[0-9])*
 parouv "("
 parferm ")"
 %%
-{parouv} {return PAROUV;}
+("SELECT"|"select") {return SELECT;}
+("CREATE"|"create") {return CREATE;}
+("INSERT"|"insert") {return INSERT;}
+("INTO"|"into") {return INTO;}
+("WHERE"|"where") {return WHERE;}
+("FROM"|"from") {return FROM;}
+[0-9]+ {yylval=atoi(yytext); return NB;}
+("=="|"!="|"<>"|"<="|">="|"<"|">") {return COMP;}
 {parferm} {return PARFERM;}
-{sql} {return SQL;}
+{parouv} {return PAROUV;}
 {id} {return ID;}
-[$] {return FIN; /* fin */}
-[\t \n]
+[,|.] {return yytext[0];}
+[$] {return FIN;}
+[\n] return 0;
+
 %%

@@ -49,33 +49,11 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    ID = 258,
-    FIN = 259,
-    PAROUV = 260,
-    PARFERM = 261,
-    SELECT = 262,
-    FROM = 263,
-    WHERE = 264,
-    COMP = 265,
-    NB = 266,
-    CREATE = 267,
-    INSERT = 268,
-    INTO = 269
+    NUMBER = 258
   };
 #endif
 /* Tokens.  */
-#define ID 258
-#define FIN 259
-#define PAROUV 260
-#define PARFERM 261
-#define SELECT 262
-#define FROM 263
-#define WHERE 264
-#define COMP 265
-#define NB 266
-#define CREATE 267
-#define INSERT 268
-#define INTO 269
+#define NUMBER 258
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
