@@ -1295,7 +1295,7 @@ yyreduce:
     {
   case 2:
 #line 13 "file.y"
-           {printf("commande reseau correcte !");}
+           {printf("syntaxiquement correct!");}
 #line 1300 "y.tab.c"
     break;
 

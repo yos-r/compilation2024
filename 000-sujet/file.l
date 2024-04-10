@@ -13,6 +13,6 @@ parferm ")"
 {parferm} {return PARFERM;}
 {sql} {return SQL;}
 {id} {return ID;}
-[$] {return FIN;}
+[$] {return FIN; /* fin */}
 [\t \n]
 %%
