@@ -1,2 +1,1 @@
-select a,b,a $
-select cd,c $
+select z,b ,b

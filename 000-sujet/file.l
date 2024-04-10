@@ -9,6 +9,7 @@ id [a-zA-Z]([a-zA-Z]|[0-9])*
 parouv "("
 parferm ")"
 %%
+"DECIMAL"
 ("SELECT"|"select") {return SELECT;}
 ("CREATE"|"create") {return CREATE;}
 ("INSERT"|"insert") {return INSERT;}

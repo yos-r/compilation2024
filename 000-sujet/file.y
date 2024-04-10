@@ -18,10 +18,10 @@ int num_strings = 0;
 int is_string_in_array(char* strings[],char* str,int num_strings) {
     for (int i = 0; i < num_strings; i++) {
         if (strcmp(strings[i], str) == 0) {
-            return 1; // String found in the array
+            return 1;
         }
     }
-    return 0; // String not found in the array
+    return 0; 
 }
 
 // Function to add a string to the array if it's not already present
@@ -29,15 +29,12 @@ void add_string(char* strings[], char* str,int num_strings) {
     if (num_strings < MAX_STRINGS) {
         if (!is_string_in_array(strings,str,num_strings)) {
             strings[num_strings] = strdup(str);
-            num_strings++;
-            printf("numstrings %d ",num_strings);
 
-            printf("Added '%s' to the array.\n", str);
         } else {
-            printf("String '%s' already exists in the array.\n", str);
+            printf("le champ '%s' est dupliqué \n", str);
         }
     } else {
-        printf("Array is full. Cannot add '%s'.\n", str);
+        printf("Erreur '%s'.\n", str);
     }
 }
 void display_strings(char* strings[], int num_strings) {
@@ -77,19 +74,22 @@ void empty_array(char* strings[] ,int numstrings) {
 %token TABLE
 %token TYPE
 %%
+S:S ';' CMD | CMD 
 /* # de champs selectionnes dans la requete 
 detection des duplicats dans la selection/*/ 
-CMD: SELECT listeselect FIN
+CMD: SELECT listeselect 
+{printf("\n champs selectionnes = %d \n",champs);}
+|SELECT listeselect FROM ID WHERE ID COMP
 {printf(" champs selectionnes = %d \n",champs);}
-|SELECT listeselect FROM ID WHERE ID COMP ';' FIN
-{printf(" champs selectionnes = %d \n",champs);}
-| CREATE TABLE ID PAROUV listecreation PARFERM FIN 
+| CREATE TABLE ID PAROUV listecreation PARFERM  
 {printf(" colonnes de la table = %d \n",colonnes);}
 
 listecreation : ID TYPE {colonnes+=1;} 
-| listecreation ',' ID TYPE {colonnes+=1;};
+| listecreation ',' ID TYPE {colonnes+=1; };
+
 listeselect : ID {champs+=1; add_string(strings, $1, num_strings); num_strings++;}
 | listeselect','ID {champs+=1;add_string(strings, $3, num_strings);num_strings++;};
+| error { yyerror("selectionner un id"); }
 
 %%
 
@@ -99,5 +99,5 @@ int main(int argc, char *argv[]){
     ++argv; --argc;
 if ( argc > 0 ) yyin = fopen( argv[0], "r" );
 else yyin = stdin;
-for(int i=0;i<2;i++) {yyparse(); champs=0;colonnes=0;empty_array(strings,num_strings);num_strings=0;};
+for(int i=0;i<1;i++) {yyparse(); champs=0;colonnes=0;empty_array(strings,num_strings);num_strings=0;};
 return 0;}
