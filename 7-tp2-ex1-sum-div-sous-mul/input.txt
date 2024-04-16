@@ -1,0 +1,1 @@
+somme 2,5. produit 3,6. division 4,2. soustraction 3,2. $

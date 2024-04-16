@@ -1,0 +1,11 @@
+1021 n'est pas un nombre binaire 
+
+ 10101 est un nombre binaire 
+
+ 11 est un nombre binaire 
+
+ 000 est un nombre binaire 
+
+ 0 est un nombre binaire 
+
+ 1 est un nombre binaire 

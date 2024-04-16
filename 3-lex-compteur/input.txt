@@ -1,2 +1,0 @@
-ceci est un mot 
-ceci est un nombre 264

@@ -1,0 +1,4 @@
+[124]: entier
+[azDFASDF32]: identificateur
+[aaabbbba]: nombre pair de a et de b
+[aabb]: des a d'abord et des b ensuite

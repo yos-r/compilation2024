@@ -1,0 +1,4 @@
+Le nombre de mots est 9 
+ Le nombre de lignes est 3 
+La somme des entiers est: 6 
+Le nombre de caracteres est 65 

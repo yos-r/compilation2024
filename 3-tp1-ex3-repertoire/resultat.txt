@@ -1,0 +1,69 @@
+Nom: Channouf
+Prénom(s): belgacem
+Caractère non reconnu: @
+Caractère non reconnu: 0
+Caractère non reconnu: 4
+Caractère non reconnu: 2
+Caractère non reconnu: 5
+Caractère non reconnu: 3
+Caractère non reconnu: 2
+Caractère non reconnu: 1
+Caractère non reconnu: 5
+Caractère non reconnu: 8
+Caractère non reconnu: 8
+Nom: Ben
+Prénom(s): salah
+Prénom(s): jalel
+Caractère non reconnu: @
+Caractère non reconnu: 8
+Caractère non reconnu: 5
+Caractère non reconnu: 7
+Caractère non reconnu: 5
+Caractère non reconnu: 8
+Caractère non reconnu: 9
+Caractère non reconnu: 5
+Caractère non reconnu: 6
+Caractère non reconnu: 5
+Caractère non reconnu: 6
+Nom: Soufi
+Prénom(s): mohamed
+Prénom(s): amine
+Caractère non reconnu: @
+Caractère non reconnu: 4
+Caractère non reconnu: 5
+Caractère non reconnu: 7
+Caractère non reconnu: 8
+Caractère non reconnu: 1
+Caractère non reconnu: 2
+Caractère non reconnu: 3
+Caractère non reconnu: 7
+Caractère non reconnu: 5
+Caractère non reconnu: 7
+Nom: Touons
+Prénom(s): omar
+Prénom(s): chatty
+Caractère non reconnu: @
+Caractère non reconnu: 7
+Caractère non reconnu: 8
+Caractère non reconnu: 6
+Caractère non reconnu: 5
+Caractère non reconnu: 4
+Caractère non reconnu: 2
+Caractère non reconnu: 1
+Caractère non reconnu: 5
+Caractère non reconnu: 1
+Caractère non reconnu: 9
+Nom: Brun
+Prénom(s): leon
+Prénom(s): paul
+Caractère non reconnu: @
+Caractère non reconnu: 5
+Caractère non reconnu: 4
+Caractère non reconnu: 8
+Caractère non reconnu: 9
+Caractère non reconnu: 6
+Caractère non reconnu: 7
+Caractère non reconnu: 3
+Caractère non reconnu: 2
+Caractère non reconnu: 4
+Caractère non reconnu: 5

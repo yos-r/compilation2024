@@ -1,0 +1,8 @@
+[babbaaab]: nombre pair de a et de b
+[abbb]: des a d'abord et des b ensuite
+[aabb]: nombre pair de a et de b
+[abbb]: des a d'abord et des b ensuite
+autre
+autre
+autre
+[aaabbbba]: nombre pair de a et de b

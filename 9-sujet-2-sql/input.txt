@@ -1,0 +1,2 @@
+select a,b ,b ; 
+select c,b ,c ;

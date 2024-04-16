@@ -1,0 +1,11 @@
+apres permutation des lignes
+------
+
+[babbaaab]: nombre pair de a et de b
+[abbb]: des a d'abord et des b ensuite
+[aabb]: des a d'abord et des b ensuite
+[abbb]: des a d'abord et des b ensuite
+autre
+autre
+autre
+[aaabbbba]: nombre pair de a et de b

@@ -1,0 +1,24 @@
+[" fichier exemple "] chaine
+[if] motcle 
+[a] ident 
+[>] op_rel 
+[b] ident 
+[a] ident 
+=[a] ident 
+[+] op_arith 
+[2] entier 
+ ["chaîne deux "] chaine
+[# commmentaire#  ]  pas de '#' à la fin 
+[3] entier 
+ .[5] entier 
+ [5.3E2] reel 530.000000 
+[+] op_arith 
+[4] entier 
+ .[2] entier 
+ [-.2e2] reel -20.000000 
+[2.1et] exposant attendu, erreur ligne 4 
+[truc1] ident 
+[x1] ident 
+[1x] identificateur mal formé , erreur ligne 5 
+chaine incomplete ** erreur ligne 6 
+[#fin ]  pas de '#' à la fin 
