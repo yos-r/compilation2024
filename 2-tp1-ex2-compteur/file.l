@@ -12,7 +12,7 @@ mot [a-zA-Z]+
 nombre [0-9]+
 ligne \n
 %%
-{mot} nmots++; ncar+=yyleng;^
+{mot} nmots++; ncar+=yyleng;
 {ligne} nlignes++;ncar+=yyleng;
 {nombre} somme+=atof(yytext);ncar+=yyleng;
 . ncar++;

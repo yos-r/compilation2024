@@ -1,1 +1,1 @@
-somme 2,5. produit 3,6. division 4,2. soustraction 3,2. $
+somme 2,5. division 4,3. soustraction 4,2. produit 3,2. $

@@ -1,3 +1,4 @@
+/* tp1 ex3 repertoire */
 %option noyywrap
 %{
 #include <stdio.h>
@@ -6,7 +7,7 @@
 
 [A-Z][a-zA-Z0-9]* { printf("Nom: %s\n", yytext); }
 
-[a-z]+(\s+[a-z]+)* { printf("Prénom(s): %s\n", yytext); }
+[a-z]+[a-zA-Z0-9]* { printf("Prénom(s): %s\n", yytext); }
 [0-9]{2}" "[0-9]{2}" "[0-9]{2}" "[0-9]{2}" "[0-9]{2} { printf("Numéro de téléphone: %s \n", yytext); }
 [ \t] ; 
 \n      ;

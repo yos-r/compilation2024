@@ -1,1 +1,1 @@
- Soustraction = 1 Division =2.000000 Produit = 18 Somme = 7
+Produit = 6 Soustraction = 2 Division =1.333333 Somme = 7

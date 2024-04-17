@@ -444,14 +444,16 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "file.l"
-#line 3 "file.l"
+/* TP1 EX2 COMPTEUR MOTS/LIGNES/CHARS/ SOMME DES NOMBRES LUS */
+#line 4 "file.l"
 	#include<stdio.h>
+    // initialisation
     int nmots=0;
     int nlignes=1;
     int ncar=0;
     int somme=0;
-#line 454 "lex.yy.c"
-#line 455 "lex.yy.c"
+#line 456 "lex.yy.c"
+#line 457 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -668,9 +670,9 @@ YY_DECL
 		}
 
 	{
-#line 12 "file.l"
+#line 14 "file.l"
 
-#line 674 "lex.yy.c"
+#line 676 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -729,31 +731,31 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 13 "file.l"
+#line 15 "file.l"
 nmots++; ncar+=yyleng;
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 14 "file.l"
+#line 16 "file.l"
 nlignes++;ncar+=yyleng;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 15 "file.l"
+#line 17 "file.l"
 somme+=atof(yytext);ncar+=yyleng;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 16 "file.l"
+#line 18 "file.l"
 ncar++;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 17 "file.l"
+#line 19 "file.l"
 ECHO;
 	YY_BREAK
-#line 757 "lex.yy.c"
+#line 759 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1758,7 +1760,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 17 "file.l"
+#line 19 "file.l"
 
 int main(int argc, char *argv[])
 {
@@ -1766,7 +1768,6 @@ int main(int argc, char *argv[])
     if ( argc > 0 ) yyin = fopen( argv[0], "r" );
     else yyin = stdin;
 	yylex();
-
     printf("Le nombre de mots est %d \n ",nmots);
     printf("Le nombre de lignes est %d \n",nlignes);
     printf("La somme des entiers est: %d \n",somme );

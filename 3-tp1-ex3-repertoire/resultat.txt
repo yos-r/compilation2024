@@ -1,69 +1,24 @@
 Nom: Channouf
 Prénom(s): belgacem
 Caractère non reconnu: @
-Caractère non reconnu: 0
-Caractère non reconnu: 4
-Caractère non reconnu: 2
-Caractère non reconnu: 5
-Caractère non reconnu: 3
-Caractère non reconnu: 2
-Caractère non reconnu: 1
-Caractère non reconnu: 5
-Caractère non reconnu: 8
-Caractère non reconnu: 8
+Numéro de téléphone: 04 25 32 15 88 
 Nom: Ben
 Prénom(s): salah
 Prénom(s): jalel
 Caractère non reconnu: @
-Caractère non reconnu: 8
-Caractère non reconnu: 5
-Caractère non reconnu: 7
-Caractère non reconnu: 5
-Caractère non reconnu: 8
-Caractère non reconnu: 9
-Caractère non reconnu: 5
-Caractère non reconnu: 6
-Caractère non reconnu: 5
-Caractère non reconnu: 6
+Numéro de téléphone: 85 75 89 56 56 
 Nom: Soufi
 Prénom(s): mohamed
 Prénom(s): amine
 Caractère non reconnu: @
-Caractère non reconnu: 4
-Caractère non reconnu: 5
-Caractère non reconnu: 7
-Caractère non reconnu: 8
-Caractère non reconnu: 1
-Caractère non reconnu: 2
-Caractère non reconnu: 3
-Caractère non reconnu: 7
-Caractère non reconnu: 5
-Caractère non reconnu: 7
+Numéro de téléphone: 45 78 12 37 57 
 Nom: Touons
 Prénom(s): omar
 Prénom(s): chatty
 Caractère non reconnu: @
-Caractère non reconnu: 7
-Caractère non reconnu: 8
-Caractère non reconnu: 6
-Caractère non reconnu: 5
-Caractère non reconnu: 4
-Caractère non reconnu: 2
-Caractère non reconnu: 1
-Caractère non reconnu: 5
-Caractère non reconnu: 1
-Caractère non reconnu: 9
+Numéro de téléphone: 78 65 42 15 19 
 Nom: Brun
 Prénom(s): leon
 Prénom(s): paul
 Caractère non reconnu: @
-Caractère non reconnu: 5
-Caractère non reconnu: 4
-Caractère non reconnu: 8
-Caractère non reconnu: 9
-Caractère non reconnu: 6
-Caractère non reconnu: 7
-Caractère non reconnu: 3
-Caractère non reconnu: 2
-Caractère non reconnu: 4
-Caractère non reconnu: 5
+Numéro de téléphone: 54 89 67 32 45 
