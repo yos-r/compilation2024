@@ -1,2 +1,2 @@
-select a,b ,b ; 
-select c,b ,c ;
+select a from kilos where id;
+create table  (nom INT, prenom INT,prenom INT)

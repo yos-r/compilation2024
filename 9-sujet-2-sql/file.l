@@ -23,6 +23,7 @@ parferm ")"
 {parferm} {return PARFERM;}
 {parouv} {return PAROUV;}
 {id} {yylval.stringValue = strdup(yytext); return ID;}
+\-\-.* {return COMMENT;}
 [;] {return POINTVIRGULE;}
 [,|.] {return yytext[0];}
 [$] {return FIN;}

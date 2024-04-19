@@ -5,14 +5,15 @@
 #include <stdlib.h>
 
 int yylex(void); 
-int yyerror(char*s);
+int yyerror(char*s); 
 
 int champs=0;
 int colonnes=0;
-#define MAX_STRINGS 100 // Maximum number of strings in the array
-#define MAX_LENGTH 50   // Maximum length of each string
+#define MAX_STRINGS 100 
+#define MAX_LENGTH 50  
 
-char* strings[MAX_STRINGS]; // Array of pointers to strings
+char* strings[MAX_STRINGS];
+char* tables[MAX_LENGTH]; //table des tables
 int num_strings = 0;
 
 int is_string_in_array(char* strings[],char* str,int num_strings) {
@@ -76,35 +77,36 @@ void empty_array(char* strings[] ,int numstrings) {
 %token DECIMAL
 %token POINTVIRGULE
 %%
-/* S: CMD POINTVIRGULE CMD | CMD */
 /* # de champs selectionnes dans la requete 
 detection des duplicats dans la selection/*/ 
-CMD: SELECT listeselect POINTVIRGULE
-{printf("\n champs selectionnes = %d \n",champs);}
-|SELECT listeselect FROM ID WHERE ID COMP POINTVIRGULE
-{printf(" champs selectionnes = %d \n",champs);}
+S: CMD POINTVIRGULE | CMD error { yyerror("point virgule manquant"); }
+CMD: SELECT listeselect 
+{printf("champs selectionnes = %d ",champs);}
+|SELECT listeselect FROM ID WHERE ID 
+{printf(" champs selectionnes = %d ",champs);}
 | CREATE TABLE ID PAROUV listecreation PARFERM  
-{printf(" colonnes de la table = %d \n",colonnes);}
-
+{printf(" colonnes de la table = %d \n",colonnes);add_string(tables,$3,1);}
+| CREATE TABLE error PAROUV listecreation PARFERM {yyerror("dumbass");}
 listecreation : ID TYPE {colonnes+=1;} 
 | listecreation ',' ID TYPE {colonnes+=1; };
 
 listeselect : ID {champs+=1; add_string(strings, $1, num_strings); num_strings++;}
 | listeselect','ID {champs+=1;add_string(strings, $3, num_strings);num_strings++;};
-| error { yyerror("selectionner un id"); }
 
 %%
 
 #include "lex.yy.c" 
-int yyerror(char *s){printf("erreur syntaxique %s \n",s);return 0;}
+int yyerror(char *s){printf("erreur: %s \n",s);return 0;}
 int main(int argc, char *argv[]){
     ++argv; --argc;
 if ( argc > 0 ) yyin = fopen( argv[0], "r" );
 else yyin = stdin;
 for(int i=0;i<2;i++) {
     yyparse();
-     champs=0;
-     colonnes=0;
-     empty_array(strings,num_strings);
+    printf("\n");
+     champs=0; //detecteur du numero de champs selectionnes
+     colonnes=0; // detecteur du numéro de champ a creer
+     empty_array(strings,num_strings); //detecteur de duplicat
      num_strings=0;};
+     
 return 0;}
