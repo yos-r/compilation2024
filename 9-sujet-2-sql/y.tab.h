@@ -50,52 +50,66 @@ extern int yydebug;
   enum yytokentype
   {
     ID = 258,
-    FIN = 259,
-    PAROUV = 260,
-    PARFERM = 261,
-    SELECT = 262,
-    FROM = 263,
-    WHERE = 264,
-    COMP = 265,
-    NB = 266,
-    CREATE = 267,
-    INSERT = 268,
-    INTO = 269,
-    TABLE = 270,
-    TYPE = 271,
-    DECIMAL = 272,
-    POINTVIRGULE = 273
+    STRING = 259,
+    PRIMARY_KEY = 260,
+    FIN = 261,
+    PAROUV = 262,
+    PARFERM = 263,
+    SELECT = 264,
+    FROM = 265,
+    WHERE = 266,
+    COMP = 267,
+    NB = 268,
+    NUMERIC = 269,
+    CREATE = 270,
+    INSERT = 271,
+    INTO = 272,
+    TABLE = 273,
+    TYPE = 274,
+    VALUES = 275,
+    NULLL = 276,
+    POINTVIRGULE = 277,
+    COMMENT = 278,
+    UPDATE = 279,
+    DELETE = 280
   };
 #endif
 /* Tokens.  */
 #define ID 258
-#define FIN 259
-#define PAROUV 260
-#define PARFERM 261
-#define SELECT 262
-#define FROM 263
-#define WHERE 264
-#define COMP 265
-#define NB 266
-#define CREATE 267
-#define INSERT 268
-#define INTO 269
-#define TABLE 270
-#define TYPE 271
-#define DECIMAL 272
-#define POINTVIRGULE 273
+#define STRING 259
+#define PRIMARY_KEY 260
+#define FIN 261
+#define PAROUV 262
+#define PARFERM 263
+#define SELECT 264
+#define FROM 265
+#define WHERE 266
+#define COMP 267
+#define NB 268
+#define NUMERIC 269
+#define CREATE 270
+#define INSERT 271
+#define INTO 272
+#define TABLE 273
+#define TYPE 274
+#define VALUES 275
+#define NULLL 276
+#define POINTVIRGULE 277
+#define COMMENT 278
+#define UPDATE 279
+#define DELETE 280
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 57 "file.y"
+#line 74 "file.y"
 
     int intValue;
     float floatValue;
     char *stringValue;
 
-#line 99 "y.tab.h"
+#line 113 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

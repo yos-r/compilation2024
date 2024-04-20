@@ -15,6 +15,7 @@ int colonnes=0;
 char* strings[MAX_STRINGS];
 char* tables[MAX_LENGTH]; //table des tables
 int num_strings = 0;
+int num_tables=0;
 
 int is_string_in_array(char* strings[],char* str,int num_strings) {
     for (int i = 0; i < num_strings; i++) {
@@ -25,7 +26,6 @@ int is_string_in_array(char* strings[],char* str,int num_strings) {
     return 0; 
 }
 
-// Function to add a string to the array if it's not already present
 void add_string(char* strings[], char* str,int num_strings) {
     if (num_strings < MAX_STRINGS) {
         if (!is_string_in_array(strings,str,num_strings)) {
@@ -45,12 +45,29 @@ void display_strings(char* strings[], int num_strings) {
     }
 }
 void empty_array(char* strings[] ,int numstrings) {
-    // Free memory allocated for each string
     for (int i = 0; i < num_strings; i++) {
         free(strings[i]);
         strings[i] = NULL; // Optional: Set pointers to NULL for safety
     }
-    num_strings = 0; // Reset the array size to zero
+    num_strings = 0; 
+}
+int countLines(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        return -1; 
+    }
+
+    int lines = 0;
+    int ch;
+    while ((ch = fgetc(file)) != EOF) {
+        if (ch == '\n') {
+            lines++;
+        }
+    }
+
+    fclose(file);
+    return lines;
 }
 %}
 %union
@@ -61,6 +78,8 @@ void empty_array(char* strings[] ,int numstrings) {
 }
 /* tokens definis par l'analyseur lexical*/
 %token<stringValue> ID
+%token <stringValue> STRING
+%token PRIMARY_KEY
 %token FIN
 %token PAROUV
 %token PARFERM
@@ -68,31 +87,46 @@ void empty_array(char* strings[] ,int numstrings) {
 %token FROM
 %token WHERE
 %token COMP
-%token NB
+%token <intValue>NB
+%token<floatValue> NUMERIC
 %token CREATE
 %token INSERT
 %token INTO
 %token TABLE
 %token TYPE
-%token DECIMAL
+%token VALUES
+%token NULLL
 %token POINTVIRGULE
+%token COMMENT
+%token UPDATE
+%token DELETE
+
 %%
 /* # de champs selectionnes dans la requete 
 detection des duplicats dans la selection/*/ 
-S: CMD POINTVIRGULE | CMD error { yyerror("point virgule manquant"); }
+S: CMD POINTVIRGULE | COMMENT {printf("ceci est un commentaire \n ");}| CMD error { yyerror("point virgule manquant"); }
 CMD: SELECT listeselect 
 {printf("champs selectionnes = %d ",champs);}
 |SELECT listeselect FROM ID WHERE ID 
 {printf(" champs selectionnes = %d ",champs);}
 | CREATE TABLE ID PAROUV listecreation PARFERM  
-{printf(" colonnes de la table = %d \n",colonnes);add_string(tables,$3,1);}
-| CREATE TABLE error PAROUV listecreation PARFERM {yyerror("dumbass");}
-listecreation : ID TYPE {colonnes+=1;} 
-| listecreation ',' ID TYPE {colonnes+=1; };
-
+{printf(" colonnes de la table %s = %d \n",$3,colonnes);add_string(tables,$3,num_tables);num_tables++;}
+| CREATE TABLE error PAROUV listecreation PARFERM {yyerror("identifiant de la table à créer manquant");}
+| INSERT INTO ID VALUES PAROUV listeinsertion PARFERM {if (is_string_in_array(tables,$3,num_tables))
+{printf("\n");} 
+else { printf("\n pas de table %s dans la base de données \n",$3);};
+}
+listeinsertion : listeinsertion ',' NUMERIC {printf("\n %f \n",$3);} 
+| listeinsertion ',' STRING {printf("\n %s \n",$3);} 
+| listeinsertion ',' NB {printf("\n %d \n",$3);} 
+| NUMERIC {printf("\n %f \n",$1);} 
+| STRING {printf("\n %s \n",$1);}
+| NB {printf("\n %d \n",$1);}
+listecreation : ID TYPE contrainte {colonnes+=1;add_string(strings, $1, num_strings);num_strings++;} 
+| listecreation ',' ID TYPE {colonnes+=1;add_string(strings, $3, num_strings);num_strings++; };
 listeselect : ID {champs+=1; add_string(strings, $1, num_strings); num_strings++;}
 | listeselect','ID {champs+=1;add_string(strings, $3, num_strings);num_strings++;};
-
+contrainte : /*  */ | PRIMARY_KEY  
 %%
 
 #include "lex.yy.c" 
@@ -101,12 +135,15 @@ int main(int argc, char *argv[]){
     ++argv; --argc;
 if ( argc > 0 ) yyin = fopen( argv[0], "r" );
 else yyin = stdin;
-for(int i=0;i<2;i++) {
+int lines=countLines("input.txt");
+for(int i=0;i<lines;i++) {
     yyparse();
-    printf("\n");
      champs=0; //detecteur du numero de champs selectionnes
      colonnes=0; // detecteur du numéro de champ a creer
      empty_array(strings,num_strings); //detecteur de duplicat
-     num_strings=0;};
+     num_strings=0;
+     };
+
+    display_strings(tables, num_tables);
      
 return 0;}

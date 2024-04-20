@@ -13,11 +13,16 @@ Interpréteur d'instructions d'affectation, conditions, et itérations
 sujet 2:
 Interpréteur de requetes sql
 - lex et syn
-- actions sem: - calcul du nombre de champ a selectionner dans la requete selectionner : fait
+Gestion des erreurs de syntaxe spécifiques à SQL :
+
+Identifiez et signalez les erreurs courantes de syntaxe SQL telles que les parenthèses mal fermées, les virgules manquantes, etc.
+Validation des requêtes conditionnelles :
+Vérifiez que les conditions dans les clauses WHERE sont correctement formées et qu'elles ne produisent pas de résultats inattendus.
+- actions sem: 
+
+- calcul du nombre de champ a selectionner dans la requete selectionner : fait
 - detection de duplication des champs
 - detecter les erreurs de type?
-
-quelles autres actions semantiques a ajouter?
 1- Verification de l'existence des tables et des champs :
 
 2- Vérification des types de données :
@@ -26,9 +31,3 @@ quelles autres actions semantiques a ajouter?
 4- Gestion des contraintes d'intégrité :e.g NOT NULL
 
 Assurez-vous que les contraintes d'intégrité (comme les contraintes NOT NULL) sont respectées lors de l'insertion ou de la mise à jour des données.
-Gestion des erreurs de syntaxe spécifiques à SQL :
-
-Identifiez et signalez les erreurs courantes de syntaxe SQL telles que les parenthèses mal fermées, les virgules manquantes, etc.
-Validation des requêtes conditionnelles :
-
-Vérifiez que les conditions dans les clauses WHERE sont correctement formées et qu'elles ne produisent pas de résultats inattendus.

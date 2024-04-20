@@ -73,7 +73,7 @@
 #include <stdlib.h>
 
 int yylex(void); 
-int yyerror(char*s);
+int yyerror(char*s); 
 
 int champs=0;
 int colonnes=0;
@@ -83,6 +83,7 @@ int colonnes=0;
 char* strings[MAX_STRINGS];
 char* tables[MAX_LENGTH]; //table des tables
 int num_strings = 0;
+int num_tables=0;
 
 int is_string_in_array(char* strings[],char* str,int num_strings) {
     for (int i = 0; i < num_strings; i++) {
@@ -93,14 +94,13 @@ int is_string_in_array(char* strings[],char* str,int num_strings) {
     return 0; 
 }
 
-// Function to add a string to the array if it's not already present
 void add_string(char* strings[], char* str,int num_strings) {
     if (num_strings < MAX_STRINGS) {
         if (!is_string_in_array(strings,str,num_strings)) {
             strings[num_strings] = strdup(str);
 
         } else {
-            printf("le champ '%s' est dupliqué \n", str);
+            printf("le champ '%s' est dupliqué \n", str); YYABORT;
         }
     } else {
         printf("Erreur '%s'.\n", str);
@@ -113,15 +113,32 @@ void display_strings(char* strings[], int num_strings) {
     }
 }
 void empty_array(char* strings[] ,int numstrings) {
-    // Free memory allocated for each string
     for (int i = 0; i < num_strings; i++) {
         free(strings[i]);
         strings[i] = NULL; // Optional: Set pointers to NULL for safety
     }
-    num_strings = 0; // Reset the array size to zero
+    num_strings = 0; 
+}
+int countLines(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        return -1; 
+    }
+
+    int lines = 0;
+    int ch;
+    while ((ch = fgetc(file)) != EOF) {
+        if (ch == '\n') {
+            lines++;
+        }
+    }
+
+    fclose(file);
+    return lines;
 }
 
-#line 125 "y.tab.c"
+#line 142 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -170,52 +187,66 @@ extern int yydebug;
   enum yytokentype
   {
     ID = 258,
-    FIN = 259,
-    PAROUV = 260,
-    PARFERM = 261,
-    SELECT = 262,
-    FROM = 263,
-    WHERE = 264,
-    COMP = 265,
-    NB = 266,
-    CREATE = 267,
-    INSERT = 268,
-    INTO = 269,
-    TABLE = 270,
-    TYPE = 271,
-    DECIMAL = 272,
-    POINTVIRGULE = 273
+    STRING = 259,
+    PRIMARY_KEY = 260,
+    FIN = 261,
+    PAROUV = 262,
+    PARFERM = 263,
+    SELECT = 264,
+    FROM = 265,
+    WHERE = 266,
+    COMP = 267,
+    NB = 268,
+    NUMERIC = 269,
+    CREATE = 270,
+    INSERT = 271,
+    INTO = 272,
+    TABLE = 273,
+    TYPE = 274,
+    VALUES = 275,
+    NULLL = 276,
+    POINTVIRGULE = 277,
+    COMMENT = 278,
+    UPDATE = 279,
+    DELETE = 280
   };
 #endif
 /* Tokens.  */
 #define ID 258
-#define FIN 259
-#define PAROUV 260
-#define PARFERM 261
-#define SELECT 262
-#define FROM 263
-#define WHERE 264
-#define COMP 265
-#define NB 266
-#define CREATE 267
-#define INSERT 268
-#define INTO 269
-#define TABLE 270
-#define TYPE 271
-#define DECIMAL 272
-#define POINTVIRGULE 273
+#define STRING 259
+#define PRIMARY_KEY 260
+#define FIN 261
+#define PAROUV 262
+#define PARFERM 263
+#define SELECT 264
+#define FROM 265
+#define WHERE 266
+#define COMP 267
+#define NB 268
+#define NUMERIC 269
+#define CREATE 270
+#define INSERT 271
+#define INTO 272
+#define TABLE 273
+#define TYPE 274
+#define VALUES 275
+#define NULLL 276
+#define POINTVIRGULE 277
+#define COMMENT 278
+#define UPDATE 279
+#define DELETE 280
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 57 "file.y"
+#line 74 "file.y"
 
     int intValue;
     float floatValue;
     char *stringValue;
 
-#line 219 "y.tab.c"
+#line 250 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -532,21 +563,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  8
+#define YYFINAL  11
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   29
+#define YYLAST   44
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  20
+#define YYNTOKENS  27
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  5
+#define YYNNTS  7
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  12
+#define YYNRULES  21
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  30
+#define YYNSTATES  47
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   273
+#define YYMAXUTOK   280
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -562,7 +593,7 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,    19,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,    26,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -585,15 +616,17 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    82,    82,    82,    83,    85,    87,    89,    90,    91,
-      93,    94,    95
+       0,   107,   107,   107,   107,   108,   110,   112,   114,   115,
+     119,   120,   121,   122,   123,   124,   125,   126,   127,   128,
+     129,   129
 };
 #endif
 
@@ -602,10 +635,11 @@ static const yytype_int8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "ID", "FIN", "PAROUV", "PARFERM",
-  "SELECT", "FROM", "WHERE", "COMP", "NB", "CREATE", "INSERT", "INTO",
-  "TABLE", "TYPE", "DECIMAL", "POINTVIRGULE", "','", "$accept", "S", "CMD",
-  "listecreation", "listeselect", YY_NULLPTR
+  "$end", "error", "$undefined", "ID", "STRING", "PRIMARY_KEY", "FIN",
+  "PAROUV", "PARFERM", "SELECT", "FROM", "WHERE", "COMP", "NB", "NUMERIC",
+  "CREATE", "INSERT", "INTO", "TABLE", "TYPE", "VALUES", "NULLL",
+  "POINTVIRGULE", "COMMENT", "UPDATE", "DELETE", "','", "$accept", "S",
+  "CMD", "listeinsertion", "listecreation", "listeselect", "contrainte", YY_NULLPTR
 };
 #endif
 
@@ -615,11 +649,12 @@ static const char *const yytname[] =
 static const yytype_int16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273,    44
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,    44
 };
 # endif
 
-#define YYPACT_NINF (-13)
+#define YYPACT_NINF (-11)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -633,9 +668,11 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       0,     5,   -12,     9,    -1,   -13,    -3,     3,   -13,   -13,
-     -13,     7,     8,    13,    14,     4,   -13,    17,    17,    18,
-       6,    -5,    -4,   -13,   -13,   -13,    20,   -13,    10,   -13
+       1,     3,   -10,    -8,   -11,    11,    -1,   -11,    -3,     2,
+       9,   -11,   -11,   -11,    10,    12,     7,    19,    13,    18,
+     -11,    27,    27,    24,    29,    17,    -7,    -6,    14,   -11,
+      32,   -11,    35,   -11,   -11,   -11,   -11,    -4,   -11,   -11,
+      20,   -11,    21,   -11,   -11,   -11,   -11
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -643,21 +680,23 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,    12,     0,     0,     0,    10,     4,     0,     1,     3,
-       2,     0,     0,     0,     0,     0,    11,     0,     0,     0,
-       0,     0,     0,     5,     8,     7,     0,     6,     0,     9
+       0,     0,     0,     0,     3,     0,     0,    18,     5,     0,
+       0,     1,     4,     2,     0,     0,     0,     0,     0,     0,
+      19,     0,     0,     0,     0,     0,     0,     0,     0,     6,
+      20,     8,     0,     7,    14,    15,    13,     0,    21,    16,
+       0,     9,     0,    17,    11,    12,    10
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -13,   -13,   -13,    11,   -13
+     -11,   -11,   -11,   -11,    22,   -11,   -11
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     3,     4,    21,     6
+      -1,     5,     6,    37,    26,     8,    39
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -665,39 +704,47 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       9,    25,    27,     7,    13,    11,    14,     1,     5,     8,
-      15,    16,     2,    19,    26,    26,    12,    10,    17,    18,
-      20,    23,    24,    28,     0,     0,    29,     0,     0,    22
+      12,    31,    33,    16,    41,    17,     7,    14,     9,    10,
+       1,    11,    18,    19,    21,    20,     2,     3,    34,    32,
+      32,    13,    42,    15,     4,    44,    22,    35,    36,    24,
+      25,    28,    29,    23,    45,    46,    30,    38,    40,    43,
+       0,     0,     0,     0,    27
 };
 
 static const yytype_int8 yycheck[] =
 {
-       1,     6,     6,    15,     1,     8,     3,     7,     3,     0,
-       3,     3,    12,     9,    19,    19,    19,    18,     5,     5,
-       3,     3,    16,     3,    -1,    -1,    16,    -1,    -1,    18
+       1,     8,     8,     1,     8,     3,     3,    10,    18,    17,
+       9,     0,     3,     3,     7,     3,    15,    16,     4,    26,
+      26,    22,    26,    26,    23,     4,     7,    13,    14,    11,
+       3,     7,     3,    20,    13,    14,    19,     5,     3,    19,
+      -1,    -1,    -1,    -1,    22
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     7,    12,    21,    22,     3,    24,    15,     0,     1,
-      18,     8,    19,     1,     3,     3,     3,     5,     5,     9,
-       3,    23,    23,     3,    16,     6,    19,     6,     3,    16
+       0,     9,    15,    16,    23,    28,    29,     3,    32,    18,
+      17,     0,     1,    22,    10,    26,     1,     3,     3,     3,
+       3,     7,     7,    20,    11,     3,    31,    31,     7,     3,
+      19,     8,    26,     8,     4,    13,    14,    30,     5,    33,
+       3,     8,    26,    19,     4,    13,    14
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    20,    21,    21,    22,    22,    22,    22,    23,    23,
-      24,    24,    24
+       0,    27,    28,    28,    28,    29,    29,    29,    29,    29,
+      30,    30,    30,    30,    30,    30,    31,    31,    32,    32,
+      33,    33
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     2,     2,     6,     6,     6,     2,     4,
-       1,     3,     0
+       0,     2,     2,     1,     2,     2,     6,     6,     6,     7,
+       3,     3,     3,     1,     1,     1,     3,     4,     1,     3,
+       0,     1
 };
 
 
@@ -1393,61 +1440,112 @@ yyreduce:
   switch (yyn)
     {
   case 3:
-#line 82 "file.y"
-                                { yyerror("point virgule manquant"); }
-#line 1399 "y.tab.c"
+#line 107 "file.y"
+                              {printf("ceci est un commentaire \n ");}
+#line 1446 "y.tab.c"
     break;
 
   case 4:
-#line 84 "file.y"
-{printf("champs selectionnes = %d ",champs);}
-#line 1405 "y.tab.c"
+#line 107 "file.y"
+                                                                                  { yyerror("point virgule manquant"); }
+#line 1452 "y.tab.c"
     break;
 
   case 5:
-#line 86 "file.y"
-{printf(" champs selectionnes = %d ",champs);}
-#line 1411 "y.tab.c"
+#line 109 "file.y"
+{printf("champs selectionnes = %d ",champs);}
+#line 1458 "y.tab.c"
     break;
 
   case 6:
-#line 88 "file.y"
-{printf(" colonnes de la table = %d \n",colonnes);add_string(tables,(yyvsp[-3].stringValue),1);}
-#line 1417 "y.tab.c"
+#line 111 "file.y"
+{printf(" champs selectionnes = %d ",champs);}
+#line 1464 "y.tab.c"
     break;
 
   case 7:
-#line 89 "file.y"
-                                                  {yyerror("dumbass");}
-#line 1423 "y.tab.c"
+#line 113 "file.y"
+{printf(" colonnes de la table %s = %d \n",(yyvsp[-3].stringValue),colonnes);add_string(tables,(yyvsp[-3].stringValue),num_tables);num_tables++;}
+#line 1470 "y.tab.c"
     break;
 
   case 8:
-#line 90 "file.y"
-                        {colonnes+=1;}
-#line 1429 "y.tab.c"
+#line 114 "file.y"
+                                                  {yyerror("identifiant de la table à créer manquant");}
+#line 1476 "y.tab.c"
     break;
 
   case 9:
-#line 91 "file.y"
-                            {colonnes+=1; }
-#line 1435 "y.tab.c"
+#line 115 "file.y"
+                                                      {if (is_string_in_array(tables,(yyvsp[-4].stringValue),num_tables))
+{printf("\n");} 
+else { printf("\n pas de table %s dans la base de données \n",(yyvsp[-4].stringValue));};
+}
+#line 1485 "y.tab.c"
     break;
 
   case 10:
-#line 93 "file.y"
-                 {champs+=1; add_string(strings, (yyvsp[0].stringValue), num_strings); num_strings++;}
-#line 1441 "y.tab.c"
+#line 119 "file.y"
+                                            {printf("\n %f \n",(yyvsp[0].floatValue));}
+#line 1491 "y.tab.c"
     break;
 
   case 11:
-#line 94 "file.y"
+#line 120 "file.y"
+                            {printf("\n %s \n",(yyvsp[0].stringValue));}
+#line 1497 "y.tab.c"
+    break;
+
+  case 12:
+#line 121 "file.y"
+                        {printf("\n %d \n",(yyvsp[0].intValue));}
+#line 1503 "y.tab.c"
+    break;
+
+  case 13:
+#line 122 "file.y"
+          {printf("\n %f \n",(yyvsp[0].floatValue));}
+#line 1509 "y.tab.c"
+    break;
+
+  case 14:
+#line 123 "file.y"
+         {printf("\n %s \n",(yyvsp[0].stringValue));}
+#line 1515 "y.tab.c"
+    break;
+
+  case 15:
+#line 124 "file.y"
+     {printf("\n %d \n",(yyvsp[0].intValue));}
+#line 1521 "y.tab.c"
+    break;
+
+  case 16:
+#line 125 "file.y"
+                                   {colonnes+=1;add_string(strings, (yyvsp[-2].stringValue), num_strings);num_strings++;}
+#line 1527 "y.tab.c"
+    break;
+
+  case 17:
+#line 126 "file.y"
+                            {colonnes+=1;add_string(strings, (yyvsp[-1].stringValue), num_strings);num_strings++; }
+#line 1533 "y.tab.c"
+    break;
+
+  case 18:
+#line 127 "file.y"
+                 {champs+=1; add_string(strings, (yyvsp[0].stringValue), num_strings); num_strings++;}
+#line 1539 "y.tab.c"
+    break;
+
+  case 19:
+#line 128 "file.y"
                    {champs+=1;add_string(strings, (yyvsp[0].stringValue), num_strings);num_strings++;}
-#line 1447 "y.tab.c"
+#line 1545 "y.tab.c"
     break;
 
 
-#line 1451 "y.tab.c"
+#line 1549 "y.tab.c"
 
       default: break;
     }
@@ -1679,7 +1777,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 97 "file.y"
+#line 130 "file.y"
 
 
 #include "lex.yy.c" 
@@ -1688,12 +1786,15 @@ int main(int argc, char *argv[]){
     ++argv; --argc;
 if ( argc > 0 ) yyin = fopen( argv[0], "r" );
 else yyin = stdin;
-for(int i=0;i<2;i++) {
+int lines=countLines("input.txt");
+for(int i=0;i<lines;i++) {
     yyparse();
-    printf("\n");
      champs=0; //detecteur du numero de champs selectionnes
      colonnes=0; // detecteur du numéro de champ a creer
      empty_array(strings,num_strings); //detecteur de duplicat
-     num_strings=0;};
+     num_strings=0;
+     };
+
+    display_strings(tables, num_tables);
      
 return 0;}

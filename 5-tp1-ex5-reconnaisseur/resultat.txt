@@ -7,17 +7,17 @@
 =[a] ident 
 [+] op_arith 
 [2] entier 
- ["chaîne deux ] chaine incomplete ** erreur ligne 3 
-[# commmentaire#  ]  commentaire 
-[5.3E2] reel 530.000000 
+ERREUR LEXICALE:  ["chaîne deux ] :  chaine incomplete **ligne 3 
+[# commmentaire #  ] : Commentaire 
+ [5.3E2] reel 530.000000 
 [3.5] reel 3.500000 
 [+] op_arith 
 [4.2] reel 4.200000 
 [-.2e2] reel -20.000000 
-[2.1et] exposant attendu, erreur ligne 5 
+ERREUR LEXICALE:  [2.1et] : exposant attendu **ligne 5 
 [truc1] ident 
 [x1] ident 
-[1x] identificateur mal formé , erreur ligne 6 
-["chaîne incomplète  ] chaine incomplete ** erreur ligne 7 
-[-t] nombre attendu , ligne 8 
-[#fin ]  pas de '#' à la fin ** erreur ligne 9 
+ERREUR LEXICALE:  [1x] : identificateur mal formé **ligne 6 
+ERREUR LEXICALE:  ["chaîne incomplète  ] :  chaine incomplete **ligne 7 
+ERREUR LEXICALE:  [-t  ] : nombre attendu  **ligne 8 
+ERREUR LEXICALE:  [#fin ] : Commentaire non fermé **ligne 9

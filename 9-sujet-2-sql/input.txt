@@ -1,2 +1,3 @@
-select a from kilos where id;
-create table  (nom INT, prenom INT,prenom INT)
+create table asd (age INT PRIMARY KEY , age VARCHAR);
+insert into yza values (12.1, 12, 34) ;
+-- commentaire 

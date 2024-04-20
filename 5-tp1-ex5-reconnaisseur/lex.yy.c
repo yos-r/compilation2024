@@ -506,9 +506,11 @@ char *yytext;
 	#include<stdio.h>
     #include <math.h>
     int nligne = 1;
+    // fonction d'affichage de l'erreur 
+    void yyerror (const char* msg,char* lexeme,int nligne);
 
-#line 511 "lex.yy.c"
-#line 512 "lex.yy.c"
+#line 513 "lex.yy.c"
+#line 514 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -725,9 +727,9 @@ YY_DECL
 		}
 
 	{
-#line 18 "file.l"
+#line 20 "file.l"
 
-#line 731 "lex.yy.c"
+#line 733 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -786,92 +788,92 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 19 "file.l"
+#line 21 "file.l"
 {printf("[%s] entier \n ",yytext);}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 20 "file.l"
+#line 22 "file.l"
 {printf("[%s] op_rel \n",yytext);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 21 "file.l"
+#line 23 "file.l"
 {printf("[%s] op_arith \n",yytext);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 22 "file.l"
+#line 24 "file.l"
 {printf("[%s] affect \n",yytext);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 23 "file.l"
+#line 25 "file.l"
 {double value = atof(yytext); printf("[%s] reel %f \n",yytext,value); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 24 "file.l"
-{printf("[%s] identificateur mal formé , erreur ligne %d \n",yytext,nligne);}
+#line 26 "file.l"
+{yyerror("identificateur mal formé",yytext,nligne);}
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 25 "file.l"
-{printf("[%s] exposant attendu, erreur ligne %d \n",yytext,nligne);}
+#line 27 "file.l"
+{yyerror("exposant attendu",yytext,nligne);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 26 "file.l"
-{printf("[%s] nombre attendu , ligne %d \n",yytext,nligne);}
+#line 28 "file.l"
+{yyerror("nombre attendu ",yytext,nligne);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 27 "file.l"
+#line 29 "file.l"
 {printf("[%s] motcle \n",yytext);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 28 "file.l"
+#line 30 "file.l"
 {printf("[%s] chaine\n", yytext);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 29 "file.l"
-printf("[%s] chaine incomplete ** erreur ligne %d \n",yytext,nligne);
+#line 31 "file.l"
+yyerror(" chaine incomplete",yytext,nligne);
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 30 "file.l"
+#line 32 "file.l"
 {printf("[%s] ident \n",yytext);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 31 "file.l"
+#line 33 "file.l"
 {printf("[%s] comment \n", yytext);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 32 "file.l"
-{printf("[%s]  pas de '#' à la fin ** erreur ligne %d \n", yytext,nligne);}
+#line 34 "file.l"
+{yyerror("Commentaire non fermé", yytext,nligne);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 33 "file.l"
+#line 35 "file.l"
 
 	YY_BREAK
 case 16:
 /* rule 16 can match eol */
 YY_RULE_SETUP
-#line 34 "file.l"
+#line 36 "file.l"
 { nligne++; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 35 "file.l"
+#line 37 "file.l"
 ECHO;
 	YY_BREAK
-#line 875 "lex.yy.c"
+#line 877 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1876,8 +1878,11 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 35 "file.l"
+#line 37 "file.l"
 
+void yyerror(const char *msg,char* lexeme,int nligne) {
+    fprintf(stderr, "ERREUR LEXICALE:  [%s] : %s **ligne %d \n", lexeme, msg, nligne );
+}
 int main(int argc, char *argv[])
 {
     ++argv; --argc;

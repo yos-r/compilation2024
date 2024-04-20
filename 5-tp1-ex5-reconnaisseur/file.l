@@ -4,6 +4,8 @@
 	#include<stdio.h>
     #include <math.h>
     int nligne = 1;
+    // fonction d'affichage de l'erreur 
+    void yyerror (const char* msg,char* lexeme,int nligne);
 
 %}
 entier [0-9]+
@@ -21,18 +23,21 @@ commentaire \#.*\#
 {op_arith} {printf("[%s] op_arith \n",yytext);}
 {affect} {printf("[%s] affect \n",yytext);}
 {reel} {double value = atof(yytext); printf("[%s] reel %f \n",yytext,value); }
-[0-9]+[a-zA-Z_]+ {printf("[%s] identificateur mal formé , erreur ligne %d \n",yytext,nligne);}
-[-]?[0-9]*([.][0-9]+)?[e|E][^0-9] {printf("[%s] exposant attendu, erreur ligne %d \n",yytext,nligne);}
-\-[^0-9^\n]* {printf("[%s] nombre attendu , ligne %d \n",yytext,nligne);}
+[0-9]+[a-zA-Z_]+ {yyerror("identificateur mal formé",yytext,nligne);}
+[-]?[0-9]*([.][0-9]+)?[e|E][^0-9] {yyerror("exposant attendu",yytext,nligne);}
+\-[^0-9^\n]* {yyerror("nombre attendu ",yytext,nligne);}
 {motcle} {printf("[%s] motcle \n",yytext);}
 {chaine} {printf("[%s] chaine\n", yytext);}
-\"[^\"\n]* printf("[%s] chaine incomplete ** erreur ligne %d \n",yytext,nligne);
+\"[^\"\n]* yyerror(" chaine incomplete",yytext,nligne);
 {identifiantc} {printf("[%s] ident \n",yytext);}
 {commentaire} {printf("[%s] comment \n", yytext);}
-\#.*[^#\n] {printf("[%s]  pas de '#' à la fin ** erreur ligne %d \n", yytext,nligne);}
+\#.*[^#\n] {yyerror("Commentaire non fermé", yytext,nligne);}
 [ \t]+
 \n { nligne++; }
 %%
+void yyerror(const char *msg,char* lexeme,int nligne) {
+    fprintf(stderr, "ERREUR LEXICALE:  [%s] : %s **ligne %d \n", lexeme, msg, nligne );
+}
 int main(int argc, char *argv[])
 {
     ++argv; --argc;
