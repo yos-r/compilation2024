@@ -84,6 +84,7 @@ char* strings[MAX_STRINGS];
 char* tables[MAX_LENGTH]; //table des tables
 int num_strings = 0;
 int num_tables=0;
+int num_ligne=1;
 
 int is_string_in_array(char* strings[],char* str,int num_strings) {
     for (int i = 0; i < num_strings; i++) {
@@ -100,7 +101,8 @@ void add_string(char* strings[], char* str,int num_strings) {
             strings[num_strings] = strdup(str);
 
         } else {
-            printf("le champ '%s' est dupliqué \n", str); YYABORT;
+            printf("Erreur: ligne %d : le champ '%s' est dupliqué \n", num_ligne,str);
+            exit(EXIT_FAILURE); 
         }
     } else {
         printf("Erreur '%s'.\n", str);
@@ -138,7 +140,7 @@ int countLines(const char *filename) {
     return lines;
 }
 
-#line 142 "y.tab.c"
+#line 144 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -240,13 +242,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 74 "file.y"
+#line 76 "file.y"
 
     int intValue;
     float floatValue;
     char *stringValue;
 
-#line 250 "y.tab.c"
+#line 252 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -563,18 +565,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  11
+#define YYFINAL  12
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   44
+#define YYLAST   51
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  27
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  7
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  21
+#define YYNRULES  23
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  47
+#define YYNSTATES  53
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   280
@@ -624,9 +626,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   107,   107,   107,   107,   108,   110,   112,   114,   115,
-     119,   120,   121,   122,   123,   124,   125,   126,   127,   128,
-     129,   129
+       0,   109,   109,   109,   109,   110,   112,   114,   116,   117,
+     118,   122,   123,   124,   125,   126,   127,   128,   129,   130,
+     131,   132,   133,   133
 };
 #endif
 
@@ -654,7 +656,7 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-11)
+#define YYPACT_NINF (-15)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -668,11 +670,12 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       1,     3,   -10,    -8,   -11,    11,    -1,   -11,    -3,     2,
-       9,   -11,   -11,   -11,    10,    12,     7,    19,    13,    18,
-     -11,    27,    27,    24,    29,    17,    -7,    -6,    14,   -11,
-      32,   -11,    35,   -11,   -11,   -11,   -11,    -4,   -11,   -11,
-      20,   -11,    21,   -11,   -11,   -11,   -11
+       2,    11,     6,   -14,   -15,     9,    -1,   -15,     0,    12,
+       5,    13,   -15,   -15,   -15,    28,    29,    22,    27,    34,
+      15,    25,   -15,    30,    30,    30,    35,    40,    31,    -7,
+      -6,    -4,    24,   -15,    39,   -15,    42,   -15,   -15,   -15,
+     -15,   -15,    -3,   -15,   -15,    32,   -15,    26,   -15,   -15,
+     -15,   -15,   -15
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -680,23 +683,24 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     0,     3,     0,     0,    18,     5,     0,
-       0,     1,     4,     2,     0,     0,     0,     0,     0,     0,
-      19,     0,     0,     0,     0,     0,     0,     0,     0,     6,
-      20,     8,     0,     7,    14,    15,    13,     0,    21,    16,
-       0,     9,     0,    17,    11,    12,    10
+       0,     0,     0,     0,     3,     0,     0,    20,     5,     0,
+       0,     0,     1,     4,     2,     0,     0,     0,     0,     0,
+       0,     0,    21,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     6,    22,     9,     0,     8,     7,    15,
+      16,    14,     0,    23,    18,     0,    10,     0,    19,    17,
+      12,    13,    11
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -11,   -11,   -11,   -11,    22,   -11,   -11
+     -15,   -15,   -15,   -15,   -12,   -15,   -15
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     5,     6,    37,    26,     8,    39
+      -1,     5,     6,    42,    29,     8,    44
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -704,47 +708,50 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      12,    31,    33,    16,    41,    17,     7,    14,     9,    10,
-       1,    11,    18,    19,    21,    20,     2,     3,    34,    32,
-      32,    13,    42,    15,     4,    44,    22,    35,    36,    24,
-      25,    28,    29,    23,    45,    46,    30,    38,    40,    43,
-       0,     0,     0,     0,    27
+      13,    35,    37,    11,    38,    46,    18,     9,    19,    12,
+      15,     1,    30,    31,     7,    17,    20,     2,     3,    36,
+      36,    14,    36,    47,    10,     4,    16,    49,    39,    23,
+      50,    21,    22,    28,    24,    26,    27,    40,    41,    51,
+      52,    25,    32,    33,    43,    45,     0,     0,     0,     0,
+      34,    48
 };
 
 static const yytype_int8 yycheck[] =
 {
-       1,     8,     8,     1,     8,     3,     3,    10,    18,    17,
-       9,     0,     3,     3,     7,     3,    15,    16,     4,    26,
-      26,    22,    26,    26,    23,     4,     7,    13,    14,    11,
-       3,     7,     3,    20,    13,    14,    19,     5,     3,    19,
-      -1,    -1,    -1,    -1,    22
+       1,     8,     8,    17,     8,     8,     1,     1,     3,     0,
+      10,     9,    24,    25,     3,     3,     3,    15,    16,    26,
+      26,    22,    26,    26,    18,    23,    26,     1,     4,     7,
+       4,     3,     3,     3,     7,    20,    11,    13,    14,    13,
+      14,     7,     7,     3,     5,     3,    -1,    -1,    -1,    -1,
+      19,    19
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     9,    15,    16,    23,    28,    29,     3,    32,    18,
-      17,     0,     1,    22,    10,    26,     1,     3,     3,     3,
-       3,     7,     7,    20,    11,     3,    31,    31,     7,     3,
-      19,     8,    26,     8,     4,    13,    14,    30,     5,    33,
-       3,     8,    26,    19,     4,    13,    14
+       0,     9,    15,    16,    23,    28,    29,     3,    32,     1,
+      18,    17,     0,     1,    22,    10,    26,     3,     1,     3,
+       3,     3,     3,     7,     7,     7,    20,    11,     3,    31,
+      31,    31,     7,     3,    19,     8,    26,     8,     8,     4,
+      13,    14,    30,     5,    33,     3,     8,    26,    19,     1,
+       4,    13,    14
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
        0,    27,    28,    28,    28,    29,    29,    29,    29,    29,
-      30,    30,    30,    30,    30,    30,    31,    31,    32,    32,
-      33,    33
+      29,    30,    30,    30,    30,    30,    30,    30,    31,    31,
+      32,    32,    33,    33
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     1,     2,     2,     6,     6,     6,     7,
-       3,     3,     3,     1,     1,     1,     3,     4,     1,     3,
-       0,     1
+       0,     2,     2,     1,     2,     2,     6,     6,     6,     6,
+       7,     3,     3,     3,     1,     1,     1,     3,     3,     4,
+       1,     3,     0,     1
 };
 
 
@@ -1440,112 +1447,124 @@ yyreduce:
   switch (yyn)
     {
   case 3:
-#line 107 "file.y"
-                              {printf("ceci est un commentaire \n ");}
-#line 1446 "y.tab.c"
+#line 109 "file.y"
+                              {printf("Ligne %d : Commentaire \n ",num_ligne);}
+#line 1453 "y.tab.c"
     break;
 
   case 4:
-#line 107 "file.y"
-                                                                                  { yyerror("point virgule manquant"); }
-#line 1452 "y.tab.c"
+#line 109 "file.y"
+                                                                                           { printf("Erreur Ligne %d : point virgule manquant \n",num_ligne); exit(EXIT_FAILURE);}
+#line 1459 "y.tab.c"
     break;
 
   case 5:
-#line 109 "file.y"
-{printf("champs selectionnes = %d ",champs);}
-#line 1458 "y.tab.c"
+#line 111 "file.y"
+{printf(" Ligne %d: Champs selectionnes = %d ",num_ligne,champs);}
+#line 1465 "y.tab.c"
     break;
 
   case 6:
-#line 111 "file.y"
-{printf(" champs selectionnes = %d ",champs);}
-#line 1464 "y.tab.c"
+#line 113 "file.y"
+{printf(" Ligne %d: Champs selectionnes = %d ",num_ligne,champs);}
+#line 1471 "y.tab.c"
     break;
 
   case 7:
-#line 113 "file.y"
-{printf(" colonnes de la table %s = %d \n",(yyvsp[-3].stringValue),colonnes);add_string(tables,(yyvsp[-3].stringValue),num_tables);num_tables++;}
-#line 1470 "y.tab.c"
+#line 115 "file.y"
+{printf(" Ligne %d: Colonnes de la table %s = %d \n",num_ligne,(yyvsp[-3].stringValue),colonnes);add_string(tables,(yyvsp[-3].stringValue),num_tables);num_tables++;}
+#line 1477 "y.tab.c"
     break;
 
   case 8:
-#line 114 "file.y"
-                                                  {yyerror("identifiant de la table à créer manquant");}
-#line 1476 "y.tab.c"
+#line 116 "file.y"
+                                                  {printf("Erreur Ligne %d : Identifiant manquant \n",num_ligne); exit(EXIT_FAILURE);}
+#line 1483 "y.tab.c"
     break;
 
   case 9:
-#line 115 "file.y"
-                                                      {if (is_string_in_array(tables,(yyvsp[-4].stringValue),num_tables))
-{printf("\n");} 
-else { printf("\n pas de table %s dans la base de données \n",(yyvsp[-4].stringValue));};
-}
-#line 1485 "y.tab.c"
+#line 117 "file.y"
+                                               {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
+#line 1489 "y.tab.c"
     break;
 
   case 10:
-#line 119 "file.y"
-                                            {printf("\n %f \n",(yyvsp[0].floatValue));}
-#line 1491 "y.tab.c"
+#line 118 "file.y"
+                                                      {if (is_string_in_array(tables,(yyvsp[-4].stringValue),num_tables))
+{printf("Ligne %d : Insertion réussie\n",num_ligne);} 
+else { printf("\n Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[-4].stringValue)); exit(EXIT_FAILURE); };
+}
+#line 1498 "y.tab.c"
     break;
 
   case 11:
-#line 120 "file.y"
-                            {printf("\n %s \n",(yyvsp[0].stringValue));}
-#line 1497 "y.tab.c"
+#line 122 "file.y"
+                                            {}
+#line 1504 "y.tab.c"
     break;
 
   case 12:
-#line 121 "file.y"
-                        {printf("\n %d \n",(yyvsp[0].intValue));}
-#line 1503 "y.tab.c"
+#line 123 "file.y"
+                            {}
+#line 1510 "y.tab.c"
     break;
 
   case 13:
-#line 122 "file.y"
-          {printf("\n %f \n",(yyvsp[0].floatValue));}
-#line 1509 "y.tab.c"
+#line 124 "file.y"
+                        {}
+#line 1516 "y.tab.c"
     break;
 
   case 14:
-#line 123 "file.y"
-         {printf("\n %s \n",(yyvsp[0].stringValue));}
-#line 1515 "y.tab.c"
+#line 125 "file.y"
+          {}
+#line 1522 "y.tab.c"
     break;
 
   case 15:
-#line 124 "file.y"
-     {printf("\n %d \n",(yyvsp[0].intValue));}
-#line 1521 "y.tab.c"
+#line 126 "file.y"
+         {}
+#line 1528 "y.tab.c"
     break;
 
   case 16:
-#line 125 "file.y"
-                                   {colonnes+=1;add_string(strings, (yyvsp[-2].stringValue), num_strings);num_strings++;}
-#line 1527 "y.tab.c"
+#line 127 "file.y"
+     {}
+#line 1534 "y.tab.c"
     break;
 
   case 17:
-#line 126 "file.y"
-                            {colonnes+=1;add_string(strings, (yyvsp[-1].stringValue), num_strings);num_strings++; }
-#line 1533 "y.tab.c"
+#line 128 "file.y"
+                           { printf("\n Erreur ligne %d: Erreur d'insertion \n",num_ligne); exit(EXIT_FAILURE); }
+#line 1540 "y.tab.c"
     break;
 
   case 18:
-#line 127 "file.y"
-                 {champs+=1; add_string(strings, (yyvsp[0].stringValue), num_strings); num_strings++;}
-#line 1539 "y.tab.c"
+#line 129 "file.y"
+                                   {colonnes+=1;add_string(strings, (yyvsp[-2].stringValue), num_strings);num_strings++;}
+#line 1546 "y.tab.c"
     break;
 
   case 19:
-#line 128 "file.y"
+#line 130 "file.y"
+                            {colonnes+=1;add_string(strings, (yyvsp[-1].stringValue), num_strings);num_strings++; }
+#line 1552 "y.tab.c"
+    break;
+
+  case 20:
+#line 131 "file.y"
+                 {champs+=1; add_string(strings, (yyvsp[0].stringValue), num_strings); num_strings++;}
+#line 1558 "y.tab.c"
+    break;
+
+  case 21:
+#line 132 "file.y"
                    {champs+=1;add_string(strings, (yyvsp[0].stringValue), num_strings);num_strings++;}
-#line 1545 "y.tab.c"
+#line 1564 "y.tab.c"
     break;
 
 
-#line 1549 "y.tab.c"
+#line 1568 "y.tab.c"
 
       default: break;
     }
@@ -1777,7 +1796,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 130 "file.y"
+#line 134 "file.y"
 
 
 #include "lex.yy.c" 
@@ -1793,8 +1812,9 @@ for(int i=0;i<lines;i++) {
      colonnes=0; // detecteur du numéro de champ a creer
      empty_array(strings,num_strings); //detecteur de duplicat
      num_strings=0;
+     num_ligne++;
      };
 
-    display_strings(tables, num_tables);
+    /* display_strings(tables, num_tables); */
      
 return 0;}

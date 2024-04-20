@@ -16,6 +16,7 @@ char* strings[MAX_STRINGS];
 char* tables[MAX_LENGTH]; //table des tables
 int num_strings = 0;
 int num_tables=0;
+int num_ligne=1;
 
 int is_string_in_array(char* strings[],char* str,int num_strings) {
     for (int i = 0; i < num_strings; i++) {
@@ -32,7 +33,8 @@ void add_string(char* strings[], char* str,int num_strings) {
             strings[num_strings] = strdup(str);
 
         } else {
-            printf("le champ '%s' est dupliqué \n", str);
+            printf("Erreur: ligne %d : le champ '%s' est dupliqué \n", num_ligne,str);
+            exit(EXIT_FAILURE); 
         }
     } else {
         printf("Erreur '%s'.\n", str);
@@ -104,24 +106,26 @@ int countLines(const char *filename) {
 %%
 /* # de champs selectionnes dans la requete 
 detection des duplicats dans la selection/*/ 
-S: CMD POINTVIRGULE | COMMENT {printf("ceci est un commentaire \n ");}| CMD error { yyerror("point virgule manquant"); }
+S: CMD POINTVIRGULE | COMMENT {printf("Ligne %d : Commentaire \n ",num_ligne);}| CMD error { printf("Erreur Ligne %d : point virgule manquant \n",num_ligne); exit(EXIT_FAILURE);}
 CMD: SELECT listeselect 
-{printf("champs selectionnes = %d ",champs);}
+{printf(" Ligne %d: Champs selectionnes = %d ",num_ligne,champs);}
 |SELECT listeselect FROM ID WHERE ID 
-{printf(" champs selectionnes = %d ",champs);}
+{printf(" Ligne %d: Champs selectionnes = %d ",num_ligne,champs);}
 | CREATE TABLE ID PAROUV listecreation PARFERM  
-{printf(" colonnes de la table %s = %d \n",$3,colonnes);add_string(tables,$3,num_tables);num_tables++;}
-| CREATE TABLE error PAROUV listecreation PARFERM {yyerror("identifiant de la table à créer manquant");}
+{printf(" Ligne %d: Colonnes de la table %s = %d \n",num_ligne,$3,colonnes);add_string(tables,$3,num_tables);num_tables++;}
+| CREATE TABLE error PAROUV listecreation PARFERM {printf("Erreur Ligne %d : Identifiant manquant \n",num_ligne); exit(EXIT_FAILURE);}
+| CREATE error ID PAROUV listecreation PARFERM {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
 | INSERT INTO ID VALUES PAROUV listeinsertion PARFERM {if (is_string_in_array(tables,$3,num_tables))
-{printf("\n");} 
-else { printf("\n pas de table %s dans la base de données \n",$3);};
+{printf("Ligne %d : Insertion réussie\n",num_ligne);} 
+else { printf("\n Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$3); exit(EXIT_FAILURE); };
 }
-listeinsertion : listeinsertion ',' NUMERIC {printf("\n %f \n",$3);} 
-| listeinsertion ',' STRING {printf("\n %s \n",$3);} 
-| listeinsertion ',' NB {printf("\n %d \n",$3);} 
-| NUMERIC {printf("\n %f \n",$1);} 
-| STRING {printf("\n %s \n",$1);}
-| NB {printf("\n %d \n",$1);}
+listeinsertion : listeinsertion ',' NUMERIC {} 
+| listeinsertion ',' STRING {} 
+| listeinsertion ',' NB {} 
+| NUMERIC {} 
+| STRING {}
+| NB {}
+| listeinsertion ',' error { printf("\n Erreur ligne %d: Erreur d'insertion \n",num_ligne); exit(EXIT_FAILURE); }
 listecreation : ID TYPE contrainte {colonnes+=1;add_string(strings, $1, num_strings);num_strings++;} 
 | listecreation ',' ID TYPE {colonnes+=1;add_string(strings, $3, num_strings);num_strings++; };
 listeselect : ID {champs+=1; add_string(strings, $1, num_strings); num_strings++;}
@@ -142,8 +146,9 @@ for(int i=0;i<lines;i++) {
      colonnes=0; // detecteur du numéro de champ a creer
      empty_array(strings,num_strings); //detecteur de duplicat
      num_strings=0;
+     num_ligne++;
      };
 
-    display_strings(tables, num_tables);
+    /* display_strings(tables, num_tables); */
      
 return 0;}
