@@ -1,10 +1,9 @@
 -- commentaire 
-create table xyz (id INT  , adresse VARCHAR(255));
-create table asd (id INT , adresse VARCHAR (255) , FOREIGN KEY (street) REFERENCES xyz (id));
+create table xyz (id INT, agee INT, age VARCHAR(244),adresse VARCHAR(244));
+create table asd (id INT , age INT, FOREIGN KEY (street) REFERENCES xyz (id));
 update asd set dfs = -2.4;
-update asd set fs = "3434";
-select a,b from asd where df = 23.34 and df=23.43 ;
+select id from xyz where df = 23.34 and not df=23.43 ;
 DROP TABLE  asd ;
-insert into xyz values(12.1,"age") ;
+--insert into xyz values(12.1,"age",123.43) ;
 DELETE FROM xyz where df>1 or df<1;
 select a, b from xyz ;

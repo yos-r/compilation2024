@@ -80,12 +80,43 @@ int colonnes=0;
 int predicat=0;
 #define MAX_STRINGS 100 
 #define MAX_LENGTH 50  
+#define MAX_KEYS 10    
+
 
 char* strings[MAX_STRINGS];
+char* types[MAX_STRINGS];
+
 char* tables[MAX_LENGTH]; //table des tables
 int num_strings = 0;
+int num_types=0;
+int num_champs=0;
 int num_tables=0;
 int num_ligne=1;
+// enregistrement cle valeur pour stocker les tables et les nombs de champs
+struct KeyValue {
+    char key[100]; // Assuming maximum length of the key is 100 characters
+    char champs[MAX_LENGTH][100]; // Assuming maximum length of each value is 100 characters
+    char types[MAX_LENGTH][100];
+    int num_values; // Number of values in the array
+};
+int cle=0; //nombre de clés/ enregistrements dans tablesChamps
+struct KeyValue tablesChamps[MAX_KEYS];
+// affichage du tableau des enregistrements
+void displayArray(struct KeyValue array[], int size) {
+    for (int i = 0; i < size; i++) {
+        // printf("Struct %d:\n", i + 1);
+        printf("Table: %s\n", array[i].key);
+        printf("    Champs:\n");
+        for (int j = 0; j < array[i].num_values; j++) {
+            printf("        %s\n", array[i].champs[j]);
+        }
+        printf("    Types:\n");
+        for (int j = 0; j < array[i].num_values; j++) {
+            printf("        %s\n", array[i].types[j]);
+        }
+        printf("\n");
+    }
+}
 // HELP FUNCTIONS: manipulation des tableaux et des chaines
 int is_string_in_array(char* strings[],char* str,int num_strings) {
     for (int i = 0; i < num_strings; i++) {
@@ -95,7 +126,28 @@ int is_string_in_array(char* strings[],char* str,int num_strings) {
     }
     return 0; 
 }
-
+int are_all_values_in_types(char types[][100], int types_size, char* strings[], int num_strings) {
+    for (int i = 0; i < num_strings; i++) {
+        int found = 0;
+        for (int j = 0; j < types_size; j++) {
+            if (strcmp(strings[i], types[j]) == 0) {
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            
+            return 0; // Not all values found in types array
+        }
+    }
+    return 1; // All values found in types array
+}
+void display_champs(struct KeyValue kv) {
+    printf("value array for key '%s':\n", kv.key);
+    for (int i = 0; i < kv.num_values; i++) {
+        printf("%s\t", kv.champs[i]);
+    }
+}
 void add_string(char* strings[], char* str,int num_strings,int choix ) {
     if (num_strings < MAX_STRINGS) {
         if (!is_string_in_array(strings,str,num_strings)) {
@@ -106,11 +158,15 @@ void add_string(char* strings[], char* str,int num_strings,int choix ) {
                   case 0: printf("Erreur: ligne %d : le champ '%s' est dupliqué \n", num_ligne,str); break;
                   case 1: printf("Erreur: ligne %d : la table '%s' existe déja \n", num_ligne,str);break;
                    }
-            exit(EXIT_FAILURE); 
+            if (choix!=2) exit(EXIT_FAILURE); 
         }
     } else {
         printf("Erreur '%s'.\n", str);
     }
+}
+void add_string2(char* strings[], char* str,int num_strings ) {
+    if (num_strings < MAX_STRINGS) {
+        strings[num_strings] = strdup(str);}
 }
 void delete_string(char* strings[], char* str, int num_strings) {
     int i, j;
@@ -126,6 +182,14 @@ void delete_string(char* strings[], char* str, int num_strings) {
     }
     // String not found
     printf("String '%s' not found in the array.\n", str);
+}
+int findKey(struct KeyValue array[], char *searchKey,int size){
+    for (int i = 0; i < size; i++) {
+        if (strcmp(array[i].key, searchKey) == 0) {
+            return i; 
+        }
+    }
+    return -1;
 }
 void display_strings(char* strings[], int num_strings) {
     printf("Strings in the array:\n");
@@ -159,7 +223,7 @@ int countLines(const char *filename) {
     return lines;
 }
 
-#line 163 "y.tab.c"
+#line 227 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -281,13 +345,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 95 "file.y"
+#line 159 "file.y"
 
     int intValue;
     float floatValue;
     char *stringValue;
 
-#line 291 "y.tab.c"
+#line 355 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -606,16 +670,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  23
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   148
+#define YYLAST   139
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  37
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  13
+#define YYNNTS  14
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  54
+#define YYNRULES  56
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  132
+#define YYNSTATES  136
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   290
@@ -664,14 +728,14 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_int16 yyrline[] =
 {
-       0,   138,   138,   139,   140,   143,   145,   147,   148,   149,
-     151,   154,   155,   156,   157,   158,   160,   162,   163,   165,
-     168,   169,   171,   171,   172,   173,   175,   175,   175,   177,
-     177,   177,   179,   180,   181,   182,   183,   184,   185,   187,
-     188,   189,   190,   192,   193,   194,   195,   196,   197,   199,
-     200,   201,   203,   203,   203
+       0,   203,   203,   204,   205,   208,   216,   218,   222,   223,
+     225,   228,   229,   230,   231,   232,   234,   236,   237,   239,
+     242,   243,   245,   245,   246,   247,   248,   248,   250,   250,
+     250,   252,   252,   252,   254,   255,   256,   257,   258,   259,
+     260,   262,   264,   267,   270,   273,   274,   275,   276,   277,
+     278,   280,   281,   282,   284,   284,   284
 };
 #endif
 
@@ -686,8 +750,8 @@ static const char *const yytname[] =
   "TABLE", "INT", "VARCHAR", "VALUES", "NULLL", "POINTVIRGULE", "COMMENT",
   "UPDATE", "DELETE", "SET", "ALL", "DROP", "EGAL", "DIFF", "LOGIQUE",
   "NOT", "','", "$accept", "S", "CMD", "choix", "condition",
-  "listecondition", "op", "value", "listeinsertion", "listecreation",
-  "type", "listeselect", "contrainte", YY_NULLPTR
+  "listecondition", "not", "op", "value", "listeinsertion",
+  "listecreation", "type", "listeselect", "contrainte", YY_NULLPTR
 };
 #endif
 
@@ -708,7 +772,7 @@ static const yytype_int16 yytoknum[] =
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-53)
+#define YYTABLE_NINF (-55)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -717,20 +781,20 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      36,    14,    13,    33,   -60,    24,    12,    21,    29,    17,
-     -60,   -60,   -60,    48,     4,    63,    77,    80,    -8,    56,
-      83,    84,    78,   -60,   -60,   -60,    85,    86,    87,    82,
-      88,    89,    69,    92,    81,    90,   -60,   -60,   -60,    90,
-     -60,   -60,    20,    20,    20,    91,    62,    64,     5,    96,
-     -60,   -60,    27,    93,    -1,     0,     9,    53,    61,    61,
-      61,    55,    18,    67,   -60,    95,   -60,     2,     3,   102,
-     -60,    28,   -60,   -60,   -60,   -60,   -60,    10,   -60,   -60,
-     -60,   -60,   -60,   -60,   -60,   -60,   -60,   -60,   -60,    61,
-     103,    94,    97,    98,   -60,   -60,   -60,   100,    27,    99,
-     -60,    57,   -60,    18,    59,   -60,   101,   107,   -60,   104,
-     -60,   -60,   -60,   -60,    61,   105,   -60,   112,   106,   -60,
-     108,   110,   114,   -60,   119,   120,   115,   117,   -60,   121,
-     118,   -60
+      39,    14,    21,    -5,   -60,    24,    12,    33,    54,    17,
+     -60,   -60,   -60,    43,     4,    56,    59,    66,    45,    52,
+      83,    84,    76,   -60,   -60,   -60,    85,    86,    87,    82,
+      88,    89,    69,    92,    77,    81,   -60,   -60,   -60,    81,
+     -60,   -60,    20,    20,    20,    90,    63,    64,     5,    65,
+     -60,   -60,    27,    93,    -1,     0,    10,    15,    60,    60,
+      60,    57,   -60,    70,    98,   -60,    94,   -60,     2,     3,
+     102,   -60,    26,   -60,   -60,   -60,   -60,   -60,    11,   -60,
+     -60,   -60,   -60,   -60,   -60,   -60,   -60,    65,    19,    91,
+      95,    96,   -60,   -60,   -60,    97,    27,    99,   -60,    67,
+     106,   -60,   -60,   -60,    60,    78,   -60,   103,   105,     3,
+     112,   -60,   -60,   -60,   -60,    19,   -60,   101,   -60,   114,
+     -60,   108,    60,   109,   111,   115,   -60,   -60,   118,   120,
+     116,   119,   -60,   121,   117,   -60
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -739,33 +803,33 @@ static const yytype_int8 yypact[] =
 static const yytype_int8 yydefact[] =
 {
        0,     0,     0,     0,     3,     0,     0,     0,     0,     0,
-       6,    49,    20,     0,     0,     0,     0,     0,     0,     0,
+       6,    51,    20,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     1,     4,     2,     0,     0,     0,     0,
        0,     0,     0,     0,     0,    23,    17,    18,    16,    23,
-      51,    50,     0,     0,     0,     0,     0,     0,     0,     0,
+      53,    52,     0,     0,     0,     0,     0,     0,     0,    27,
       19,     5,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,    22,    48,     0,    44,     0,     0,     0,
-       9,     0,     8,     7,    36,    37,    35,     0,    30,    29,
-      31,    13,    12,    14,    15,    11,    28,    26,    27,     0,
-       0,     0,     0,     0,    54,    53,    39,     0,     0,     0,
-      10,     0,    25,     0,     0,    46,     0,     0,    40,     0,
-      38,    33,    34,    32,     0,     0,    43,     0,     0,    24,
-       0,     0,     0,    47,     0,     0,     0,     0,    42,     0,
-       0,    41
+       0,     0,    26,    22,     0,    50,     0,    46,     0,     0,
+       0,     9,     0,     8,     7,    38,    39,    37,     0,    32,
+      31,    33,    13,    12,    14,    15,    11,    27,     0,     0,
+       0,     0,    56,    55,    41,     0,     0,     0,    10,     0,
+       0,    30,    28,    29,     0,     0,    48,     0,     0,     0,
+       0,    40,    35,    36,    34,     0,    25,     0,    45,     0,
+      42,     0,     0,     0,     0,     0,    24,    49,     0,     0,
+       0,     0,    44,     0,     0,    43
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -60,   -60,   -60,   -60,   109,   -60,    26,   -59,   -60,    31,
-      19,   -60,   -60
+     -60,   -60,   -60,   -60,   100,   -60,    38,    16,   -59,   -60,
+      41,    34,   -60,    23
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     8,     9,    13,    50,    63,    89,    81,    77,    54,
-      68,    14,    96
+      -1,     8,     9,    13,    50,    63,    64,   104,    82,    78,
+      54,    69,    14,    94
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -773,40 +837,38 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-      82,    83,    85,    92,    94,    27,    60,   -45,    95,    70,
-      72,    93,   -45,   -52,    15,    10,   -21,    11,    24,    73,
-     100,    33,    21,    52,    20,    18,    53,    19,    64,    23,
-     102,    98,    86,    16,    99,    71,    71,    61,   -45,   -52,
-      28,    22,    25,    65,    12,    71,   101,     1,    66,    67,
-      87,    88,    17,     2,     3,   119,    84,    74,   110,    78,
-      26,   111,     4,     5,     6,    78,    29,     7,    75,    76,
-      79,    80,   112,   113,    55,    56,    79,    80,    30,    37,
-      31,    38,    47,    32,    48,    34,    35,    36,    39,    40,
-      41,    42,    45,    46,    58,   115,    59,    43,    44,    62,
-      57,    90,    69,    49,    91,    97,   103,   118,   109,   104,
-     107,   116,   105,   106,   117,   121,   122,   108,   123,   124,
-     120,   125,   126,   127,   130,   128,   129,     0,   131,   114,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,    51
+      83,    84,    86,    90,    92,    27,    60,   -47,    93,    71,
+      73,    91,   -47,   -54,    17,    10,   -21,    11,    24,    75,
+      74,    98,    15,    52,    20,    18,    53,    19,    65,    96,
+      76,    77,    97,   101,    21,    72,    72,    61,   -47,   -54,
+      28,    16,    25,    66,    12,   116,    72,    99,    67,    68,
+       1,   102,   103,    22,    23,    26,     2,     3,    85,    29,
+      30,    79,    31,   126,    79,     4,     5,     6,   111,    32,
+       7,   112,    80,    81,    33,    80,    81,    37,    47,    38,
+      48,    34,   113,   114,    55,    56,    35,    36,    39,    40,
+      41,    42,    45,    46,    49,    58,    59,    43,    44,    57,
+      62,    88,    70,    89,    87,    95,   105,   108,   110,   115,
+     106,   107,   119,   118,   117,   121,   123,   124,   125,   127,
+     128,   130,   129,   131,   134,   100,   132,   135,   133,     0,
+     109,   122,   120,     0,     0,     0,     0,     0,     0,    51
 };
 
 static const yytype_int8 yycheck[] =
 {
       59,    60,    61,     1,     1,     1,     1,     5,     5,    10,
-      10,     9,    10,    10,     1,     1,    12,     3,     1,    10,
-      10,    29,     1,     3,    12,     1,     6,     3,     1,     0,
-      89,     3,    14,    20,     6,    36,    36,    32,    36,    36,
-      36,    20,    25,    16,    30,    36,    36,    11,    21,    22,
-      32,    33,    19,    17,    18,   114,     1,     4,     1,     4,
-      12,     4,    26,    27,    28,     4,     3,    31,    15,    16,
-      15,    16,    15,    16,    43,    44,    15,    16,     1,     1,
-       3,     3,     1,     3,     3,    29,     3,     3,     3,     3,
-       3,     9,    23,     1,    32,    36,    32,     9,     9,     3,
-       9,    34,     9,    13,     9,     3,     3,     3,     9,    15,
-      10,    10,    15,    15,     7,     3,    10,    98,    10,     9,
-      15,     7,     3,     3,     3,    10,     9,    -1,    10,   103,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    39
+      10,     9,    10,    10,    19,     1,    12,     3,     1,     4,
+      10,    10,     1,     3,    12,     1,     6,     3,     1,     3,
+      15,    16,     6,    14,     1,    36,    36,    32,    36,    36,
+      36,    20,    25,    16,    30,   104,    36,    36,    21,    22,
+      11,    32,    33,    20,     0,    12,    17,    18,     1,     3,
+       1,     4,     3,   122,     4,    26,    27,    28,     1,     3,
+      31,     4,    15,    16,    29,    15,    16,     1,     1,     3,
+       3,    29,    15,    16,    43,    44,     3,     3,     3,     3,
+       3,     9,    23,     1,    13,    32,    32,     9,     9,     9,
+      35,     3,     9,     9,    34,     3,    15,    10,     9,     3,
+      15,    15,     7,    10,    36,     3,    15,     3,    10,    10,
+       9,     3,     7,     3,     3,    87,    10,    10,     9,    -1,
+      96,   115,   109,    -1,    -1,    -1,    -1,    -1,    -1,    39
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -814,19 +876,19 @@ static const yytype_int8 yycheck[] =
 static const yytype_int8 yystos[] =
 {
        0,    11,    17,    18,    26,    27,    28,    31,    38,    39,
-       1,     3,    30,    40,    48,     1,    20,    19,     1,     3,
+       1,     3,    30,    40,    49,     1,    20,    19,     1,     3,
       12,     1,    20,     0,     1,    25,    12,     1,    36,     3,
        1,     3,     3,    29,    29,     3,     3,     1,     3,     3,
        3,     3,     9,     9,     9,    23,     1,     1,     3,    13,
-      41,    41,     3,     6,    46,    46,    46,     9,    32,    32,
-       1,    32,     3,    42,     1,    16,    21,    22,    47,     9,
-      10,    36,    10,    10,     4,    15,    16,    45,     4,    15,
-      16,    44,    44,    44,     1,    44,    14,    32,    33,    43,
-      34,     9,     1,     9,     1,     5,    49,     3,     3,     6,
-      10,    36,    44,     3,    15,    15,    15,    10,    47,     9,
-       1,     4,    15,    16,    43,    36,    10,     7,     3,    44,
-      15,     3,    10,    10,     9,     7,     3,     3,    10,     9,
-       3,    10
+      41,    41,     3,     6,    47,    47,    47,     9,    32,    32,
+       1,    32,    35,    42,    43,     1,    16,    21,    22,    48,
+       9,    10,    36,    10,    10,     4,    15,    16,    46,     4,
+      15,    16,    45,    45,    45,     1,    45,    34,     3,     9,
+       1,     9,     1,     5,    50,     3,     3,     6,    10,    36,
+      43,    14,    32,    33,    44,    15,    15,    15,    10,    48,
+       9,     1,     4,    15,    16,     3,    45,    36,    10,     7,
+      50,     3,    44,    15,     3,    10,    45,    10,     9,     7,
+       3,     3,    10,     9,     3,    10
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -834,10 +896,10 @@ static const yytype_int8 yyr1[] =
 {
        0,    37,    38,    38,    38,    39,    39,    39,    39,    39,
       39,    39,    39,    39,    39,    39,    39,    39,    39,    39,
-      40,    40,    41,    41,    42,    42,    43,    43,    43,    44,
-      44,    44,    45,    45,    45,    45,    45,    45,    45,    46,
-      46,    46,    46,    47,    47,    47,    47,    47,    47,    48,
-      48,    48,    49,    49,    49
+      40,    40,    41,    41,    42,    42,    43,    43,    44,    44,
+      44,    45,    45,    45,    46,    46,    46,    46,    46,    46,
+      46,    47,    47,    47,    47,    48,    48,    48,    48,    48,
+      48,    49,    49,    49,    50,    50,    50
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -845,10 +907,10 @@ static const yytype_int8 yyr2[] =
 {
        0,     2,     2,     1,     2,     5,     2,     6,     6,     6,
        7,     6,     6,     6,     6,     6,     3,     3,     3,     4,
-       1,     1,     2,     0,     5,     3,     1,     1,     1,     1,
-       1,     1,     3,     3,     3,     1,     1,     1,     3,     3,
-       4,    11,     9,     4,     1,     1,     3,     6,     1,     1,
-       3,     3,     0,     1,     1
+       1,     1,     2,     0,     6,     4,     1,     0,     1,     1,
+       1,     1,     1,     1,     3,     3,     3,     1,     1,     1,
+       3,     3,     5,    11,     9,     4,     1,     1,     3,     6,
+       1,     1,     3,     3,     0,     1,     1
 };
 
 
@@ -1544,263 +1606,290 @@ yyreduce:
   switch (yyn)
     {
   case 3:
-#line 139 "file.y"
+#line 204 "file.y"
           {printf("Ligne %d : Commentaire \n ",num_ligne);}
-#line 1550 "y.tab.c"
-    break;
-
-  case 4:
-#line 140 "file.y"
-            { printf("Erreur Ligne %d : point virgule manquant \n",num_ligne); exit(EXIT_FAILURE);}
-#line 1556 "y.tab.c"
-    break;
-
-  case 5:
-#line 143 "file.y"
-                               {if (is_string_in_array(tables,(yyvsp[-1].stringValue),num_tables)) {printf("Ligne %d : Sélection réussie depuis la table %s \n",num_ligne,(yyvsp[-1].stringValue));} 
-        else { printf("Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[-1].stringValue)); exit(EXIT_FAILURE); };}
-#line 1563 "y.tab.c"
-    break;
-
-  case 6:
-#line 145 "file.y"
-               { printf("Erreur ligne %d: Identifiant manquant ou mal formé \n",num_ligne); exit(EXIT_FAILURE); }
-#line 1569 "y.tab.c"
-    break;
-
-  case 7:
-#line 147 "file.y"
-                                                {add_string(tables,(yyvsp[-3].stringValue),num_tables,1); printf(" Ligne %d: Colonnes de la table %s = %d \n",num_ligne,(yyvsp[-3].stringValue),colonnes);num_tables++;printf("Ligne %d : Création de la table %s réussie \n",num_ligne,(yyvsp[-3].stringValue));}
-#line 1575 "y.tab.c"
-    break;
-
-  case 8:
-#line 148 "file.y"
-                                                  {printf("Erreur Ligne %d : Identifiant manquant \n",num_ligne); exit(EXIT_FAILURE);}
-#line 1581 "y.tab.c"
-    break;
-
-  case 9:
-#line 149 "file.y"
-                                               {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
-#line 1587 "y.tab.c"
-    break;
-
-  case 10:
-#line 151 "file.y"
-                                                      {if (is_string_in_array(tables,(yyvsp[-4].stringValue),num_tables)) {printf("Ligne %d : Insertion réussie dans la table %s \n",num_ligne,(yyvsp[-4].stringValue));} 
-        else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[-4].stringValue)); exit(EXIT_FAILURE); };}
-#line 1594 "y.tab.c"
-    break;
-
-  case 11:
-#line 154 "file.y"
-                              {if (is_string_in_array(tables,(yyvsp[-4].stringValue),num_tables)) {printf("Ligne %d : Mise à jour de la table %s réussie \n",num_ligne,(yyvsp[-4].stringValue));} else {printf("Erreur Ligne %d : La table %s n'existe pas ",num_ligne,(yyvsp[-4].stringValue)); exit(EXIT_FAILURE);}}
-#line 1600 "y.tab.c"
-    break;
-
-  case 12:
-#line 155 "file.y"
-                                  {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
-#line 1606 "y.tab.c"
-    break;
-
-  case 13:
-#line 156 "file.y"
-                                     {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
 #line 1612 "y.tab.c"
     break;
 
-  case 14:
-#line 157 "file.y"
-                                {printf("Erreur Ligne %d : Opérateur incorrect, la mise à jour est effectuée avec = ",num_ligne); exit(EXIT_FAILURE);}
+  case 4:
+#line 205 "file.y"
+            { printf("Erreur Ligne %d : point virgule manquant \n",num_ligne); exit(EXIT_FAILURE);}
 #line 1618 "y.tab.c"
     break;
 
-  case 15:
-#line 158 "file.y"
-                              {printf("Erreur Ligne %d : ",num_ligne); exit(EXIT_FAILURE);}
-#line 1624 "y.tab.c"
-    break;
-
-  case 16:
-#line 160 "file.y"
-                {if (is_string_in_array(tables,(yyvsp[0].stringValue),num_tables)) { delete_string(tables,(yyvsp[0].stringValue),num_tables); num_tables--;printf("Ligne %d : Suppression de la table %s réussie\n",num_ligne,(yyvsp[0].stringValue));} 
-        else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[0].stringValue)); exit(EXIT_FAILURE); };}
+  case 5:
+#line 208 "file.y"
+                               {if (is_string_in_array(tables,(yyvsp[-1].stringValue),num_tables)) {
+    int key=findKey(tablesChamps,(yyvsp[-1].stringValue),cle);
+        int result = are_all_values_in_types(tablesChamps[key].champs, tablesChamps[key].num_values, strings,num_strings);
+        display_champs(tablesChamps[key]);
+        printf("Ligne %d: result =%d | %d \n",num_ligne,result, tablesChamps[key].num_values);
+// int a= are_all_strings_in_array($4,strings,num_strings,tablesChamps[key].champs,tablesChamps[key].num_values) ; 
+printf("Ligne %d : Sélection réussie depuis la table %s \n",num_ligne,(yyvsp[-1].stringValue));} 
+        else { printf("Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[-1].stringValue)); exit(EXIT_FAILURE); };}
 #line 1631 "y.tab.c"
     break;
 
-  case 17:
-#line 162 "file.y"
-                {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
+  case 6:
+#line 216 "file.y"
+               { printf("Erreur ligne %d: Identifiant manquant ou mal formé \n",num_ligne); exit(EXIT_FAILURE); }
 #line 1637 "y.tab.c"
     break;
 
+  case 7:
+#line 218 "file.y"
+                                                {add_string(tables,(yyvsp[-3].stringValue),num_tables,1); printf(" Ligne %d: Colonnes de la table %s = %d \n",num_ligne,(yyvsp[-3].stringValue),colonnes);num_tables++;
+printf("Ligne %d : Création de la table %s réussie \n",num_ligne,(yyvsp[-3].stringValue));
+strcpy(tablesChamps[cle].key, (yyvsp[-3].stringValue));tablesChamps[cle].num_values=num_strings;cle++;
+}
+#line 1646 "y.tab.c"
+    break;
+
+  case 8:
+#line 222 "file.y"
+                                                  {printf("Erreur Ligne %d : Identifiant manquant \n",num_ligne); exit(EXIT_FAILURE);}
+#line 1652 "y.tab.c"
+    break;
+
+  case 9:
+#line 223 "file.y"
+                                               {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
+#line 1658 "y.tab.c"
+    break;
+
+  case 10:
+#line 225 "file.y"
+                                                      {if (is_string_in_array(tables,(yyvsp[-4].stringValue),num_tables)) {int clef= findKey(tablesChamps,(yyvsp[-4].stringValue),cle); /* chercher la cle*/if (num_champs==tablesChamps[clef].num_values) printf("Ligne %d : Insertion réussie dans la table %s \n",num_ligne,(yyvsp[-4].stringValue)); else {printf("Erreur Ligne %d : La table %s possede %d colonnes, vous avez fourni %d ",num_ligne,(yyvsp[-4].stringValue),tablesChamps[clef].num_values,num_champs); exit(EXIT_FAILURE);};} 
+        else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[-4].stringValue)); exit(EXIT_FAILURE); };}
+#line 1665 "y.tab.c"
+    break;
+
+  case 11:
+#line 228 "file.y"
+                              {if (is_string_in_array(tables,(yyvsp[-4].stringValue),num_tables)) {printf("Ligne %d : Mise à jour de la table %s réussie \n",num_ligne,(yyvsp[-4].stringValue));} else {printf("Erreur Ligne %d : La table %s n'existe pas ",num_ligne,(yyvsp[-4].stringValue)); exit(EXIT_FAILURE);}}
+#line 1671 "y.tab.c"
+    break;
+
+  case 12:
+#line 229 "file.y"
+                                  {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
+#line 1677 "y.tab.c"
+    break;
+
+  case 13:
+#line 230 "file.y"
+                                     {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
+#line 1683 "y.tab.c"
+    break;
+
+  case 14:
+#line 231 "file.y"
+                                {printf("Erreur Ligne %d : Opérateur incorrect, la mise à jour est effectuée avec = ",num_ligne); exit(EXIT_FAILURE);}
+#line 1689 "y.tab.c"
+    break;
+
+  case 15:
+#line 232 "file.y"
+                              {printf("Erreur Ligne %d : ",num_ligne); exit(EXIT_FAILURE);}
+#line 1695 "y.tab.c"
+    break;
+
+  case 16:
+#line 234 "file.y"
+                {if (is_string_in_array(tables,(yyvsp[0].stringValue),num_tables)) { delete_string(tables,(yyvsp[0].stringValue),num_tables); num_tables--;printf("Ligne %d : Suppression de la table %s réussie\n",num_ligne,(yyvsp[0].stringValue));} 
+        else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[0].stringValue)); exit(EXIT_FAILURE); };}
+#line 1702 "y.tab.c"
+    break;
+
+  case 17:
+#line 236 "file.y"
+                {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
+#line 1708 "y.tab.c"
+    break;
+
   case 18:
-#line 163 "file.y"
+#line 237 "file.y"
                    {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
-#line 1643 "y.tab.c"
+#line 1714 "y.tab.c"
     break;
 
   case 19:
-#line 165 "file.y"
+#line 239 "file.y"
                            {if (is_string_in_array(tables,(yyvsp[-1].stringValue),num_tables)) { if ((yyvsp[0].intValue)==1) {printf("Ligne %d : La table %s est vidée \n",num_ligne,(yyvsp[-1].stringValue));}; printf("Ligne %d : Suppression de lignes réussie depuis la table %s \n",num_ligne,(yyvsp[-1].stringValue));} 
         else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[-1].stringValue)); exit(EXIT_FAILURE); };}
-#line 1650 "y.tab.c"
+#line 1721 "y.tab.c"
     break;
 
   case 20:
-#line 168 "file.y"
+#line 242 "file.y"
            {printf(" Ligne %d: Tous les champs selectionnes\n",num_ligne);}
-#line 1656 "y.tab.c"
+#line 1727 "y.tab.c"
     break;
 
   case 21:
-#line 169 "file.y"
+#line 243 "file.y"
               {printf(" Ligne %d: Champs selectionnes = %d \n",num_ligne,champs);}
-#line 1662 "y.tab.c"
+#line 1733 "y.tab.c"
     break;
 
   case 22:
-#line 171 "file.y"
+#line 245 "file.y"
                                  {(yyval.intValue)=0; if (predicat>1) printf("Ligne %d: %d prédicats dans la clause \n",num_ligne,predicat);}
-#line 1668 "y.tab.c"
+#line 1739 "y.tab.c"
     break;
 
   case 23:
-#line 171 "file.y"
+#line 245 "file.y"
                                                                                                                                    {(yyval.intValue)=1;}
-#line 1674 "y.tab.c"
+#line 1745 "y.tab.c"
     break;
 
   case 24:
-#line 172 "file.y"
-                                                   {predicat++;}
-#line 1680 "y.tab.c"
+#line 246 "file.y"
+                                                       {predicat++;}
+#line 1751 "y.tab.c"
     break;
 
   case 25:
-#line 173 "file.y"
-              {predicat++;}
-#line 1686 "y.tab.c"
-    break;
-
-  case 32:
-#line 179 "file.y"
-                                            {}
-#line 1692 "y.tab.c"
-    break;
-
-  case 33:
-#line 180 "file.y"
-                            {}
-#line 1698 "y.tab.c"
+#line 247 "file.y"
+                  {predicat++;}
+#line 1757 "y.tab.c"
     break;
 
   case 34:
-#line 181 "file.y"
-                        {}
-#line 1704 "y.tab.c"
+#line 254 "file.y"
+                                            {num_champs++;}
+#line 1763 "y.tab.c"
     break;
 
   case 35:
-#line 182 "file.y"
-          {}
-#line 1710 "y.tab.c"
+#line 255 "file.y"
+                            {num_champs++;}
+#line 1769 "y.tab.c"
     break;
 
   case 36:
-#line 183 "file.y"
-         {}
-#line 1716 "y.tab.c"
+#line 256 "file.y"
+                        {num_champs++;}
+#line 1775 "y.tab.c"
     break;
 
   case 37:
-#line 184 "file.y"
-     {}
-#line 1722 "y.tab.c"
+#line 257 "file.y"
+          {num_champs++;}
+#line 1781 "y.tab.c"
     break;
 
   case 38:
-#line 185 "file.y"
-                           { printf("Erreur ligne %d: Erreur d'insertion \n",num_ligne); exit(EXIT_FAILURE); }
-#line 1728 "y.tab.c"
+#line 258 "file.y"
+         {num_champs++;}
+#line 1787 "y.tab.c"
     break;
 
   case 39:
-#line 187 "file.y"
-                                   {colonnes+=1;add_string(strings, (yyvsp[-2].stringValue), num_strings,0);num_strings++;}
-#line 1734 "y.tab.c"
+#line 259 "file.y"
+     {num_champs++;}
+#line 1793 "y.tab.c"
     break;
 
   case 40:
-#line 188 "file.y"
-                            {colonnes+=1;add_string(strings, (yyvsp[-1].stringValue), num_strings,0);num_strings++; }
-#line 1740 "y.tab.c"
+#line 260 "file.y"
+                           { printf("Erreur ligne %d: Erreur d'insertion \n",num_ligne); exit(EXIT_FAILURE); }
+#line 1799 "y.tab.c"
     break;
 
   case 41:
-#line 189 "file.y"
-                                                                                   {if (!is_string_in_array(tables,(yyvsp[-3].stringValue),num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,(yyvsp[-3].stringValue)); exit(EXIT_FAILURE);} else { colonnes+=1;add_string(strings, (yyvsp[-6].stringValue), num_strings,0);num_strings++; }}
-#line 1746 "y.tab.c"
+#line 262 "file.y"
+                                   {colonnes+=1;add_string(strings, (yyvsp[-2].stringValue), num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], (yyvsp[-2].stringValue));num_strings++;
+add_string2(types, (yyvsp[-1].stringValue), num_types);strcpy(tablesChamps[cle].types[num_types], (yyvsp[-1].stringValue));num_types++; }
+#line 1806 "y.tab.c"
     break;
 
   case 42:
-#line 190 "file.y"
-                                                                {colonnes+=1;add_string(strings, (yyvsp[-6].stringValue), num_strings,0);num_strings++; }
-#line 1752 "y.tab.c"
+#line 264 "file.y"
+                                       {printf("type: %s",(yyvsp[-1].stringValue));colonnes+=1;add_string(strings, (yyvsp[-2].stringValue), num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], (yyvsp[-2].stringValue));num_strings++;
+add_string2(types, (yyvsp[-1].stringValue), num_types);strcpy(tablesChamps[cle].types[num_types], (yyvsp[-1].stringValue));num_types++;
+}
+#line 1814 "y.tab.c"
     break;
 
   case 43:
-#line 192 "file.y"
-                                {if ((yyvsp[-1].intValue)>255) {printf("Erreur ligne %d : taille de la chaine excède 255",num_ligne);exit(EXIT_FAILURE);}}
-#line 1758 "y.tab.c"
+#line 267 "file.y"
+                                                                                   {if (!is_string_in_array(tables,(yyvsp[-3].stringValue),num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,(yyvsp[-3].stringValue)); exit(EXIT_FAILURE);} else { colonnes+=1;
+add_string(strings, (yyvsp[-6].stringValue), num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], (yyvsp[-6].stringValue)); num_strings++; 
+add_string2(types, "FOREIGN", num_types);strcpy(tablesChamps[cle].types[num_types], "FOREIGN");num_types++; }}
+#line 1822 "y.tab.c"
+    break;
+
+  case 44:
+#line 270 "file.y"
+                                                                {colonnes+=1;add_string(strings, (yyvsp[-6].stringValue), num_strings,0);num_strings++; 
+add_string(types, "FOREIGN", num_types,2);num_types++;}
+#line 1829 "y.tab.c"
     break;
 
   case 45:
-#line 194 "file.y"
-           {printf("Erreur ligne %d : taille de la chaine non spécifiée ",num_ligne);exit(EXIT_FAILURE);}
-#line 1764 "y.tab.c"
+#line 273 "file.y"
+                                {if ((yyvsp[-1].intValue)>65535 ) {printf("Erreur ligne %d : taille de la chaine excède 65,535 ",num_ligne);exit(EXIT_FAILURE);} else {(yyval.stringValue)="VARCHAR";}}
+#line 1835 "y.tab.c"
     break;
 
   case 46:
-#line 195 "file.y"
-                    {printf("Erreur ligne %d : parenthèse ouvrante oubliée ",num_ligne);exit(EXIT_FAILURE);}
-#line 1770 "y.tab.c"
+#line 274 "file.y"
+      {(yyval.stringValue)="INT";}
+#line 1841 "y.tab.c"
+    break;
+
+  case 47:
+#line 275 "file.y"
+           {printf("Erreur ligne %d : taille de la chaine non spécifiée ",num_ligne);exit(EXIT_FAILURE);}
+#line 1847 "y.tab.c"
     break;
 
   case 48:
-#line 197 "file.y"
-        {printf("Erreur ligne %d : Type non reconnu \n ",num_ligne);}
-#line 1776 "y.tab.c"
+#line 276 "file.y"
+                    {printf("Erreur ligne %d : parenthèse ouvrante oubliée ",num_ligne);exit(EXIT_FAILURE);}
+#line 1853 "y.tab.c"
     break;
 
   case 49:
-#line 199 "file.y"
-                 {champs+=1; add_string(strings, (yyvsp[0].stringValue), num_strings,0); num_strings++;}
-#line 1782 "y.tab.c"
+#line 277 "file.y"
+                                   {(yyval.stringValue)="NUMERIC";}
+#line 1859 "y.tab.c"
     break;
 
   case 50:
-#line 200 "file.y"
-                   {champs+=1;add_string(strings, (yyvsp[0].stringValue), num_strings,0);num_strings++;}
-#line 1788 "y.tab.c"
+#line 278 "file.y"
+        {printf("Erreur ligne %d : Type non reconnu \n ",num_ligne);}
+#line 1865 "y.tab.c"
     break;
 
   case 51:
-#line 201 "file.y"
+#line 280 "file.y"
+                 {champs+=1; add_string(strings, (yyvsp[0].stringValue), num_strings,0); num_strings++;}
+#line 1871 "y.tab.c"
+    break;
+
+  case 52:
+#line 281 "file.y"
+                   {champs+=1;add_string(strings, (yyvsp[0].stringValue), num_strings,0);num_strings++;}
+#line 1877 "y.tab.c"
+    break;
+
+  case 53:
+#line 282 "file.y"
                        { printf("Erreur ligne %d: Virgule manquante \n",num_ligne); exit(EXIT_FAILURE); }
-#line 1794 "y.tab.c"
+#line 1883 "y.tab.c"
     break;
 
-  case 54:
-#line 203 "file.y"
+  case 56:
+#line 284 "file.y"
                                      {printf("Erreur ligne %d : contrainte non valide ",num_ligne);exit(EXIT_FAILURE);}
-#line 1800 "y.tab.c"
+#line 1889 "y.tab.c"
     break;
 
 
-#line 1804 "y.tab.c"
+#line 1893 "y.tab.c"
 
       default: break;
     }
@@ -2032,7 +2121,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 204 "file.y"
+#line 285 "file.y"
 
 
 #include "lex.yy.c" 
@@ -2048,9 +2137,12 @@ for(int i=0;i<lines;i++) {
      champs=0; //detecteur du numero de champs selectionnes
      colonnes=0; // detecteur du numéro de champ a creer
      empty_array(strings,num_strings); //vider le tableau de detection des champs dupliqués
+      empty_array(types,num_types);//vider le tableau de types des champs de la table
      num_strings=0;
      num_ligne++; //incrémentation du nombre de lignes
      predicat=0; // compteur des predicats
+     num_types=0;
+     num_champs=0;
      };
     
     /* display_strings(tables, num_tables);
@@ -2058,4 +2150,17 @@ for(int i=0;i<lines;i++) {
     delete_string(tables,"asd",2);  */
     display_strings(tables, num_tables);
 
+
+// tableau d'enregistrement
+    /* struct KeyValue myArray[MAX_KEYS];
+     strcpy(myArray[0].key, "example_key_1");
+    strcpy(myArray[0].champs[0], "value1_1");
+    strcpy(myArray[0].champs[1], "value1_2");
+    myArray[0].num_values = 2;
+
+    // Set values for the second struct in the array
+    strcpy(myArray[1].key, "example_key_2");
+    strcpy(myArray[1].champs[0], "value2_1");
+    myArray[1].num_values = 1; */
+    displayArray(tablesChamps,cle);
 return 0;}
