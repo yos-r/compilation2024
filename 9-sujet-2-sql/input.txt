@@ -1,10 +1,10 @@
 -- commentaire 
 create table xyz (id INT, agee NUMERIC(22), age VARCHAR(244),adresse VARCHAR(244));
 create table asd (id INT , age INT, FOREIGN KEY (street) REFERENCES xyz (id));
-update asd set dfs = -2.4;
+update asd set id = -2.4;
 select street from asd ;
-select id from xyz where df = 23.34 and not df=23.43 ;
+select id from xyz where id = 23.34 ;
 DROP TABLE  asd ;
 --insert into xyz values(12.1,"age",123.43) ;
-DELETE FROM xyz where df>1 or df<1;
+DELETE FROM xyz where id>1 or age<1;
 DESCRIBE ;

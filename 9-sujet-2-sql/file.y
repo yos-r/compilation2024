@@ -227,7 +227,8 @@ S: CMD POINTVIRGULE
 | CMD error { printf("Erreur Ligne %d : point virgule manquant \n",num_ligne); exit(EXIT_FAILURE);}
 CMD: 
 DESCRIBE {printf("Ligne %d : Description de la base de donnees \n",num_ligne); displayArray(tablesChamps,cle);}
-|/* selection */SELECT choix FROM ID condition {if (is_string_in_array(tables,$4,num_tables)) {
+|/* selection */
+SELECT choix FROM ID condition {if (is_string_in_array(tables,$4,num_tables)) {
     int key=findKey(tablesChamps,$4,cle);
         int result = are_all_values_in_types($4,tablesChamps[key].champs, tablesChamps[key].num_values, strings,num_strings);
  printf("Ligne %d : Sélection réussie depuis la table %s \n",num_ligne,$4);} 
@@ -255,16 +256,19 @@ strcpy(tablesChamps[cle].key, $3);tablesChamps[cle].num_values=num_strings;cle++
 | DROP error ID {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
 | DROP TABLE error {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
 /* suppression de lignes d'une table */
-| DELETE FROM ID condition {if (is_string_in_array(tables,$3,num_tables)) { if ($4==1) {printf("Ligne %d : La table %s est vidée \n",num_ligne,$3);}; printf("Ligne %d : Suppression de lignes réussie depuis la table %s \n",num_ligne,$3);} 
+| DELETE FROM ID condition {if (is_string_in_array(tables,$3,num_tables)) {
+    int key=findKey(tablesChamps,$3,cle);
+        int result = are_all_values_in_types($3,tablesChamps[key].champs, tablesChamps[key].num_values, strings,num_strings);
+     if ($4==1) {printf("Ligne %d : La table %s est vidée \n",num_ligne,$3);}; printf("Ligne %d : Suppression de lignes réussie depuis la table %s \n",num_ligne,$3);} 
         else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$3); exit(EXIT_FAILURE); };}
 /* choix de selection */
 choix: ALL {printf(" Ligne %d: Tous les champs selectionnes\n",num_ligne);}
 | listeselect {printf(" Ligne %d: Champs selectionnes = %d \n",num_ligne,champs);}
 /* condition dans les requetes */
 condition: WHERE listecondition  {$$=0; if (predicat>1) printf("Ligne %d: %d prédicats dans la clause \n",num_ligne,predicat);} |  {$$=1;};
-listecondition: listecondition LOGIQUE not ID op value {predicat++;}
-| not ID op value {predicat++;} 
-not: NOT | ;
+listecondition: listecondition LOGIQUE not ID op value {predicat++;add_string2(strings, $4, num_strings); num_strings++;}
+| not ID op value {predicat++; add_string2(strings, $2, num_strings); num_strings++;} 
+not: NOT | ; 
 /* opérateurs de comparaison */
 op: EGAL | DIFF | COMP ;
 /* valeurs possibles  */
@@ -280,7 +284,7 @@ listeinsertion : listeinsertion ',' NUMERIC {num_champs++;}
 /* liste creation  */
 listecreation : ID type contrainte {colonnes+=1;add_string(strings, $1, num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], $1);num_strings++;
 add_string2(types, $2, num_types);strcpy(tablesChamps[cle].types[num_types], $2);num_types++; } 
-| listecreation ',' ID type contrainte {printf("type: %s",$4);colonnes+=1;add_string(strings, $3, num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], $3);num_strings++;
+| listecreation ',' ID type contrainte {colonnes+=1;add_string(strings, $3, num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], $3);num_strings++;
 add_string2(types, $4, num_types);strcpy(tablesChamps[cle].types[num_types], $4);num_types++;
 };
 | listecreation ',' FOREIGN_KEY PAROUV ID PARFERM  REFERENCES ID PAROUV ID PARFERM {if (!is_string_in_array(tables,$8,num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,$8); exit(EXIT_FAILURE);} else { colonnes+=1;
