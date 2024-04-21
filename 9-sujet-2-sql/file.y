@@ -9,6 +9,7 @@ int yyerror(char*s);
 
 int champs=0;
 int colonnes=0;
+int predicat=0;
 #define MAX_STRINGS 100 
 #define MAX_LENGTH 50  
 
@@ -141,6 +142,7 @@ CMD:
 /* selection */
 SELECT choix FROM ID condition {if (is_string_in_array(tables,$4,num_tables)) {printf("Ligne %d : Sélection réussie depuis la table %s \n",num_ligne,$4);} 
         else { printf("Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$4); exit(EXIT_FAILURE); };}
+| SELECT error { printf("Erreur ligne %d: Identifiant manquant ou mal formé \n",num_ligne); exit(EXIT_FAILURE); };
 /* creation d'une table */
 | CREATE TABLE ID PAROUV listecreation PARFERM  {add_string(tables,$3,num_tables,1); printf(" Ligne %d: Colonnes de la table %s = %d \n",num_ligne,$3,colonnes);num_tables++;printf("Ligne %d : Création de la table %s réussie \n",num_ligne,$3);}
 | CREATE TABLE error PAROUV listecreation PARFERM {printf("Erreur Ligne %d : Identifiant manquant \n",num_ligne); exit(EXIT_FAILURE);}
@@ -166,9 +168,9 @@ SELECT choix FROM ID condition {if (is_string_in_array(tables,$4,num_tables)) {p
 choix: ALL {printf(" Ligne %d: Tous les champs selectionnes\n",num_ligne);}
 | listeselect {printf(" Ligne %d: Champs selectionnes = %d \n",num_ligne,champs);}
 /* condition dans les requetes */
-condition: WHERE listecondition  {$$=0;} |  {$$=1;};
-listecondition: listecondition LOGIQUE ID op value 
-| ID op value;
+condition: WHERE listecondition  {$$=0; if (predicat>1) printf("Ligne %d: %d prédicats dans la clause \n",num_ligne,predicat);} |  {$$=1;};
+listecondition: listecondition LOGIQUE ID op value {predicat++;}
+| ID op value {predicat++;} 
 /* opérateurs de comparaison */
 op: EGAL | DIFF | COMP ;
 /* valeurs possibles  */
@@ -196,6 +198,7 @@ type: VARCHAR PAROUV NB PARFERM {if ($3>255) {printf("Erreur ligne %d : taille d
 /* liste selection  */
 listeselect : ID {champs+=1; add_string(strings, $1, num_strings,0); num_strings++;}
 | listeselect','ID {champs+=1;add_string(strings, $3, num_strings,0);num_strings++;}
+| listeselect error ID { printf("Erreur ligne %d: Virgule manquante \n",num_ligne); exit(EXIT_FAILURE); };
 /* contrainte optionnelle  */
 contrainte :  | PRIMARY_KEY  | error {printf("Erreur ligne %d : contrainte non valide ",num_ligne);exit(EXIT_FAILURE);}
 %%
@@ -215,6 +218,7 @@ for(int i=0;i<lines;i++) {
      empty_array(strings,num_strings); //vider le tableau de detection des champs dupliqués
      num_strings=0;
      num_ligne++; //incrémentation du nombre de lignes
+     predicat=0; // compteur des predicats
      };
     
     /* display_strings(tables, num_tables);
