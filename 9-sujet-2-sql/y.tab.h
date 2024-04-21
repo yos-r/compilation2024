@@ -52,64 +52,80 @@ extern int yydebug;
     ID = 258,
     STRING = 259,
     PRIMARY_KEY = 260,
-    FIN = 261,
-    PAROUV = 262,
-    PARFERM = 263,
-    SELECT = 264,
-    FROM = 265,
-    WHERE = 266,
-    COMP = 267,
-    NB = 268,
-    NUMERIC = 269,
-    CREATE = 270,
-    INSERT = 271,
-    INTO = 272,
-    TABLE = 273,
-    TYPE = 274,
-    VALUES = 275,
-    NULLL = 276,
-    POINTVIRGULE = 277,
-    COMMENT = 278,
-    UPDATE = 279,
-    DELETE = 280
+    FOREIGN_KEY = 261,
+    REFERENCES = 262,
+    FIN = 263,
+    PAROUV = 264,
+    PARFERM = 265,
+    SELECT = 266,
+    FROM = 267,
+    WHERE = 268,
+    COMP = 269,
+    NB = 270,
+    NUMERIC = 271,
+    CREATE = 272,
+    INSERT = 273,
+    INTO = 274,
+    TABLE = 275,
+    INT = 276,
+    VARCHAR = 277,
+    VALUES = 278,
+    NULLL = 279,
+    POINTVIRGULE = 280,
+    COMMENT = 281,
+    UPDATE = 282,
+    DELETE = 283,
+    SET = 284,
+    ALL = 285,
+    DROP = 286,
+    EGAL = 287,
+    DIFF = 288
   };
 #endif
 /* Tokens.  */
 #define ID 258
 #define STRING 259
 #define PRIMARY_KEY 260
-#define FIN 261
-#define PAROUV 262
-#define PARFERM 263
-#define SELECT 264
-#define FROM 265
-#define WHERE 266
-#define COMP 267
-#define NB 268
-#define NUMERIC 269
-#define CREATE 270
-#define INSERT 271
-#define INTO 272
-#define TABLE 273
-#define TYPE 274
-#define VALUES 275
-#define NULLL 276
-#define POINTVIRGULE 277
-#define COMMENT 278
-#define UPDATE 279
-#define DELETE 280
+#define FOREIGN_KEY 261
+#define REFERENCES 262
+#define FIN 263
+#define PAROUV 264
+#define PARFERM 265
+#define SELECT 266
+#define FROM 267
+#define WHERE 268
+#define COMP 269
+#define NB 270
+#define NUMERIC 271
+#define CREATE 272
+#define INSERT 273
+#define INTO 274
+#define TABLE 275
+#define INT 276
+#define VARCHAR 277
+#define VALUES 278
+#define NULLL 279
+#define POINTVIRGULE 280
+#define COMMENT 281
+#define UPDATE 282
+#define DELETE 283
+#define SET 284
+#define ALL 285
+#define DROP 286
+#define EGAL 287
+#define DIFF 288
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 76 "file.y"
+#line 94 "file.y"
 
     int intValue;
     float floatValue;
     char *stringValue;
 
-#line 113 "y.tab.h"
+#line 129 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -12,20 +12,30 @@ parferm ")"
 %%
 ("SELECT"|"select") {return SELECT;}
 ("PRIMARY KEY"|"primary key") {return PRIMARY_KEY;}
+("FOREIGN KEY"|"foreign key") {return FOREIGN_KEY;}
+("REFERENCES"|"references") {return REFERENCES;}
+
 ("UPDATE"|"update") {return UPDATE;}
 ("DELETE"|"delete") {return DELETE;}
 ("CREATE"|"create") {return CREATE;}
 ("INSERT"|"insert") {return INSERT;}
+("DROP"|"drop") {return DROP;}
 ("INTO"|"into") {return INTO;}
 ("VALUES"|"values") {return VALUES;}
 ("null"|"NULL") {return NULLL;}
 ("WHERE"|"where") {return WHERE;}
+("SET"|"set") {return SET;}
+\* {return ALL;}
+\= {return EGAL;}
+\<\> {return DIFF;}
 ("FROM"|"from") {return FROM;}
 ("TABLE"|"table") {return TABLE;}
-("INT"|"VARCHAR"|"NUMERIC") {return TYPE;}
+("INT"|"int") {return INT;}
+("VARCHAR"|"varchar") {return VARCHAR;}
+("NUMERIC"|"numeric") {return NUMERIC;}
 [0-9]+ {yylval.intValue=atoi(yytext); return NB;}
 [0-9]+.[0-9]+ {{yylval.floatValue=atof(yytext); return NUMERIC;}}
-("="|"<>"|"<="|">="|"<"|">") {return COMP;}
+("<="|">="|"<"|">") {return COMP;}
 {parferm} {return PARFERM;}
 {parouv} {return PAROUV;}
 {id} {yylval.stringValue = strdup(yytext); return ID;}

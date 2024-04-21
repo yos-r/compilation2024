@@ -1,3 +1,8 @@
 -- commentaire 
-create table asd (age INT PRIMARY KEY , adresse VARCHAR);
+create table xyz (id INT  , adresse VARCHAR(255));
+create table asd (id INT , adresse VARCHAR (255) , FOREIGN KEY (street) REFERENCES xyz (id));
+update asd set dfs = "343";
+select a,b from asd where df = "asdf" ;
 insert into asd values(12.1,"age") ;
+DROP table asd ;
+select a,b from xyz ;

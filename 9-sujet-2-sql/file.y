@@ -27,18 +27,36 @@ int is_string_in_array(char* strings[],char* str,int num_strings) {
     return 0; 
 }
 
-void add_string(char* strings[], char* str,int num_strings) {
+void add_string(char* strings[], char* str,int num_strings,int choix ) {
     if (num_strings < MAX_STRINGS) {
         if (!is_string_in_array(strings,str,num_strings)) {
             strings[num_strings] = strdup(str);
 
         } else {
-            printf("Erreur: ligne %d : le champ '%s' est dupliqué \n", num_ligne,str);
+            switch (choix){
+                  case 0: printf("Erreur: ligne %d : le champ '%s' est dupliqué \n", num_ligne,str); break;
+                  case 1: printf("Erreur: ligne %d : la table '%s' existe déja \n", num_ligne,str);break;
+                   }
             exit(EXIT_FAILURE); 
         }
     } else {
         printf("Erreur '%s'.\n", str);
     }
+}
+void delete_string(char* strings[], char* str, int num_strings) {
+    int i, j;
+    for (i = 0; i < num_strings; i++) {
+        if (strcmp(strings[i], str) == 0) {
+            // Found the string to delete
+            // Shift all elements after the deleted element one position to the left
+            for (j = i; j < (num_strings - 1); j++) {
+                strings[j] = strings[j + 1];
+            }
+            return; 
+        }
+    }
+    // String not found
+    printf("String '%s' not found in the array.\n", str);
 }
 void display_strings(char* strings[], int num_strings) {
     printf("Strings in the array:\n");
@@ -82,6 +100,8 @@ int countLines(const char *filename) {
 %token<stringValue> ID
 %token <stringValue> STRING
 %token PRIMARY_KEY
+%token FOREIGN_KEY
+%token REFERENCES
 %token FIN
 %token PAROUV
 %token PARFERM
@@ -95,42 +115,67 @@ int countLines(const char *filename) {
 %token INSERT
 %token INTO
 %token TABLE
-%token TYPE
+%token INT
+%token VARCHAR
 %token VALUES
 %token NULLL
 %token POINTVIRGULE
 %token COMMENT
 %token UPDATE
 %token DELETE
-
+%token SET
+%token ALL
+%token DROP
+%token EGAL
+%token DIFF
 %%
-/* # de champs selectionnes dans la requete 
-detection des duplicats dans la selection/*/ 
-S: CMD POINTVIRGULE | COMMENT {printf("Ligne %d : Commentaire \n ",num_ligne);}| CMD error { printf("Erreur Ligne %d : point virgule manquant \n",num_ligne); exit(EXIT_FAILURE);}
-CMD: SELECT listeselect 
-{printf(" Ligne %d: Champs selectionnes = %d ",num_ligne,champs);}
-|SELECT listeselect FROM ID WHERE ID 
-{printf(" Ligne %d: Champs selectionnes = %d ",num_ligne,champs);}
-| CREATE TABLE ID PAROUV listecreation PARFERM  
-{printf(" Ligne %d: Colonnes de la table %s = %d \n",num_ligne,$3,colonnes);add_string(tables,$3,num_tables);num_tables++;}
+/* axiome */ 
+S: CMD POINTVIRGULE 
+| COMMENT {printf("Ligne %d : Commentaire \n ",num_ligne);}
+| CMD error { printf("Erreur Ligne %d : point virgule manquant \n",num_ligne); exit(EXIT_FAILURE);}
+CMD: SELECT choix FROM ID condition {if (is_string_in_array(tables,$4,num_tables)) {printf("Ligne %d : Sélection réussie\n",num_ligne);} 
+        else { printf("Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$4); exit(EXIT_FAILURE); };}
+| CREATE TABLE ID PAROUV listecreation PARFERM  {add_string(tables,$3,num_tables,1); printf(" Ligne %d: Colonnes de la table %s = %d \n",num_ligne,$3,colonnes);num_tables++;printf("Ligne %d : Création de la table %s réussie \n",num_ligne,$3);}
 | CREATE TABLE error PAROUV listecreation PARFERM {printf("Erreur Ligne %d : Identifiant manquant \n",num_ligne); exit(EXIT_FAILURE);}
 | CREATE error ID PAROUV listecreation PARFERM {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
-| INSERT INTO ID VALUES PAROUV listeinsertion PARFERM {if (is_string_in_array(tables,$3,num_tables))
-{printf("Ligne %d : Insertion réussie\n",num_ligne);} 
-else { printf("\n Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$3); exit(EXIT_FAILURE); };
-}
+| INSERT INTO ID VALUES PAROUV listeinsertion PARFERM {if (is_string_in_array(tables,$3,num_tables)) {printf("Ligne %d : Insertion réussie\n",num_ligne);} 
+        else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$3); exit(EXIT_FAILURE); };}
+/* mise à jour d'une table */
+| UPDATE ID SET ID EGAL value {if (is_string_in_array(tables,$2,num_tables)) {printf("Ligne %d : Mise à jour de la table %s \n",num_ligne,$2);} else {printf("Erreur Ligne %d : La table %s n'existe pas ",num_ligne,$2); exit(EXIT_FAILURE);}}
+/* Suppression d'une table */
+| DROP TABLE ID {if (is_string_in_array(tables,$3,num_tables)) { delete_string(tables,$3,num_tables); num_tables--;printf("Ligne %d : Suppression réussie\n",num_ligne);} 
+        else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$3); exit(EXIT_FAILURE); };}
+| DROP error ID {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
+choix: ALL {printf(" Ligne %d: Tous les champs selectionnes\n",num_ligne);}
+| listeselect {printf(" Ligne %d: Champs selectionnes = %d \n",num_ligne,champs);}
+condition: WHERE ID op value  | ;
+op: EGAL | DIFF | COMP ;
+value: NB | STRING | NUMERIC;
+/* liste insertion  */
 listeinsertion : listeinsertion ',' NUMERIC {} 
 | listeinsertion ',' STRING {} 
 | listeinsertion ',' NB {} 
 | NUMERIC {} 
 | STRING {}
 | NB {}
-| listeinsertion ',' error { printf("\n Erreur ligne %d: Erreur d'insertion \n",num_ligne); exit(EXIT_FAILURE); }
-listecreation : ID TYPE contrainte {colonnes+=1;add_string(strings, $1, num_strings);num_strings++;} 
-| listecreation ',' ID TYPE {colonnes+=1;add_string(strings, $3, num_strings);num_strings++; };
-listeselect : ID {champs+=1; add_string(strings, $1, num_strings); num_strings++;}
-| listeselect','ID {champs+=1;add_string(strings, $3, num_strings);num_strings++;};
-contrainte : /*  */ | PRIMARY_KEY  
+| listeinsertion ',' error { printf("Erreur ligne %d: Erreur d'insertion \n",num_ligne); exit(EXIT_FAILURE); }
+/* liste creation  */
+listecreation : ID type contrainte {colonnes+=1;add_string(strings, $1, num_strings,0);num_strings++;} 
+| listecreation ',' ID type {colonnes+=1;add_string(strings, $3, num_strings,0);num_strings++; };
+| listecreation ',' FOREIGN_KEY PAROUV ID PARFERM  REFERENCES ID PAROUV ID PARFERM {if (!is_string_in_array(tables,$8,num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,$8); exit(EXIT_FAILURE);} else { colonnes+=1;add_string(strings, $5, num_strings,0);num_strings++; }};
+| FOREIGN_KEY PAROUV ID PARFERM REFERENCES ID PAROUV ID PARFERM {colonnes+=1;add_string(strings, $3, num_strings,0);num_strings++; };
+/* types de champs des tables */
+type: VARCHAR PAROUV NB PARFERM {if ($3>255) {printf("Erreur ligne %d : taille de la chaine excède 255",num_ligne);exit(EXIT_FAILURE);}} 
+| INT 
+| VARCHAR  {printf("Erreur ligne %d : taille de la chaine non spécifiée ",num_ligne);exit(EXIT_FAILURE);} 
+| VARCHAR error NB  {printf("Erreur ligne %d : parenthèse ouvrante oubliée ",num_ligne);exit(EXIT_FAILURE);} 
+| NUMERIC PAROUV NB ',' NB PARFERM
+| error {printf("Erreur ligne %d : Type non reconnu \n ",num_ligne);}
+/* liste selection  */
+listeselect : ID {champs+=1; add_string(strings, $1, num_strings,0); num_strings++;}
+| listeselect','ID {champs+=1;add_string(strings, $3, num_strings,0);num_strings++;}
+/* contrainte optionnelle  */
+contrainte :  | PRIMARY_KEY  | error {printf("Erreur ligne %d : contrainte non valide ",num_ligne);exit(EXIT_FAILURE);}
 %%
 
 #include "lex.yy.c" 
@@ -142,13 +187,17 @@ else yyin = stdin;
 int lines=countLines("input.txt");
 for(int i=0;i<lines;i++) {
     yyparse();
+    // réinitialisation des variables à chaque nouvelle commande
      champs=0; //detecteur du numero de champs selectionnes
      colonnes=0; // detecteur du numéro de champ a creer
-     empty_array(strings,num_strings); //detecteur de duplicat
+     empty_array(strings,num_strings); //vider le tableau de detection des champs dupliqués
      num_strings=0;
-     num_ligne++;
+     num_ligne++; //incrémentation du nombre de lignes
      };
+    
+    /* display_strings(tables, num_tables);
+    add_string(tables,"fsadf",1,0);
+    delete_string(tables,"asd",2);  */
+    display_strings(tables, num_tables);
 
-    /* display_strings(tables, num_tables); */
-     
 return 0;}
