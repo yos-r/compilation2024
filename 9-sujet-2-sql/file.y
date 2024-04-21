@@ -17,7 +17,7 @@ char* tables[MAX_LENGTH]; //table des tables
 int num_strings = 0;
 int num_tables=0;
 int num_ligne=1;
-
+// HELP FUNCTIONS: manipulation des tableaux et des chaines
 int is_string_in_array(char* strings[],char* str,int num_strings) {
     for (int i = 0; i < num_strings; i++) {
         if (strcmp(strings[i], str) == 0) {
@@ -128,28 +128,50 @@ int countLines(const char *filename) {
 %token DROP
 %token EGAL
 %token DIFF
+%token LOGIQUE
+%token NOT
+%type <intValue> condition
+
 %%
 /* axiome */ 
 S: CMD POINTVIRGULE 
 | COMMENT {printf("Ligne %d : Commentaire \n ",num_ligne);}
 | CMD error { printf("Erreur Ligne %d : point virgule manquant \n",num_ligne); exit(EXIT_FAILURE);}
-CMD: SELECT choix FROM ID condition {if (is_string_in_array(tables,$4,num_tables)) {printf("Ligne %d : Sélection réussie\n",num_ligne);} 
+CMD: 
+/* selection */
+SELECT choix FROM ID condition {if (is_string_in_array(tables,$4,num_tables)) {printf("Ligne %d : Sélection réussie depuis la table %s \n",num_ligne,$4);} 
         else { printf("Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$4); exit(EXIT_FAILURE); };}
+/* creation d'une table */
 | CREATE TABLE ID PAROUV listecreation PARFERM  {add_string(tables,$3,num_tables,1); printf(" Ligne %d: Colonnes de la table %s = %d \n",num_ligne,$3,colonnes);num_tables++;printf("Ligne %d : Création de la table %s réussie \n",num_ligne,$3);}
 | CREATE TABLE error PAROUV listecreation PARFERM {printf("Erreur Ligne %d : Identifiant manquant \n",num_ligne); exit(EXIT_FAILURE);}
 | CREATE error ID PAROUV listecreation PARFERM {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
-| INSERT INTO ID VALUES PAROUV listeinsertion PARFERM {if (is_string_in_array(tables,$3,num_tables)) {printf("Ligne %d : Insertion réussie\n",num_ligne);} 
+/* insertion de lignes */
+| INSERT INTO ID VALUES PAROUV listeinsertion PARFERM {if (is_string_in_array(tables,$3,num_tables)) {printf("Ligne %d : Insertion réussie dans la table %s \n",num_ligne,$3);} 
         else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$3); exit(EXIT_FAILURE); };}
 /* mise à jour d'une table */
-| UPDATE ID SET ID EGAL value {if (is_string_in_array(tables,$2,num_tables)) {printf("Ligne %d : Mise à jour de la table %s \n",num_ligne,$2);} else {printf("Erreur Ligne %d : La table %s n'existe pas ",num_ligne,$2); exit(EXIT_FAILURE);}}
+| UPDATE ID SET ID EGAL value {if (is_string_in_array(tables,$2,num_tables)) {printf("Ligne %d : Mise à jour de la table %s réussie \n",num_ligne,$2);} else {printf("Erreur Ligne %d : La table %s n'existe pas ",num_ligne,$2); exit(EXIT_FAILURE);}}
+| UPDATE ID SET error EGAL value  {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
+| UPDATE error SET error EGAL value  {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
+| UPDATE ID SET ID error value  {printf("Erreur Ligne %d : Opérateur incorrect, la mise à jour est effectuée avec = ",num_ligne); exit(EXIT_FAILURE);}
+| UPDATE ID SET ID EGAL error {printf("Erreur Ligne %d : ",num_ligne); exit(EXIT_FAILURE);}
 /* Suppression d'une table */
-| DROP TABLE ID {if (is_string_in_array(tables,$3,num_tables)) { delete_string(tables,$3,num_tables); num_tables--;printf("Ligne %d : Suppression réussie\n",num_ligne);} 
+| DROP TABLE ID {if (is_string_in_array(tables,$3,num_tables)) { delete_string(tables,$3,num_tables); num_tables--;printf("Ligne %d : Suppression de la table %s réussie\n",num_ligne,$3);} 
         else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$3); exit(EXIT_FAILURE); };}
 | DROP error ID {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
+| DROP TABLE error {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
+/* suppression de lignes d'une table */
+| DELETE FROM ID condition {if (is_string_in_array(tables,$3,num_tables)) { if ($4==1) {printf("Ligne %d : La table %s est vidée \n",num_ligne,$3);}; printf("Ligne %d : Suppression de lignes réussie depuis la table %s \n",num_ligne,$3);} 
+        else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$3); exit(EXIT_FAILURE); };}
+/* choix de selection */
 choix: ALL {printf(" Ligne %d: Tous les champs selectionnes\n",num_ligne);}
 | listeselect {printf(" Ligne %d: Champs selectionnes = %d \n",num_ligne,champs);}
-condition: WHERE ID op value  | ;
+/* condition dans les requetes */
+condition: WHERE listecondition  {$$=0;} |  {$$=1;};
+listecondition: listecondition LOGIQUE ID op value 
+| ID op value;
+/* opérateurs de comparaison */
 op: EGAL | DIFF | COMP ;
+/* valeurs possibles  */
 value: NB | STRING | NUMERIC;
 /* liste insertion  */
 listeinsertion : listeinsertion ',' NUMERIC {} 

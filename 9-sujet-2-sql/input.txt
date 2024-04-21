@@ -2,7 +2,9 @@
 create table xyz (id INT  , adresse VARCHAR(255));
 create table asd (id INT , adresse VARCHAR (255) , FOREIGN KEY (street) REFERENCES xyz (id));
 update asd set dfs = "343";
-select a,b from asd where df = "asdf" ;
-insert into asd values(12.1,"age") ;
-DROP table asd ;
+update asd set fs = "3434";
+select a,b from asd where df = 23.34 and df=23.43 ;
+DROP TABLE  asd ;
+insert into xyz values(12.1,"age") ;
+DELETE FROM xyz;
 select a,b from xyz ;

@@ -79,7 +79,9 @@ extern int yydebug;
     ALL = 285,
     DROP = 286,
     EGAL = 287,
-    DIFF = 288
+    DIFF = 288,
+    LOGIQUE = 289,
+    NOT = 290
   };
 #endif
 /* Tokens.  */
@@ -114,6 +116,8 @@ extern int yydebug;
 #define DROP 286
 #define EGAL 287
 #define DIFF 288
+#define LOGIQUE 289
+#define NOT 290
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -125,7 +129,7 @@ union YYSTYPE
     float floatValue;
     char *stringValue;
 
-#line 129 "y.tab.h"
+#line 133 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

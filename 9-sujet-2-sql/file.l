@@ -33,6 +33,8 @@ parferm ")"
 ("INT"|"int") {return INT;}
 ("VARCHAR"|"varchar") {return VARCHAR;}
 ("NUMERIC"|"numeric") {return NUMERIC;}
+("AND"|"and"|"OR"|"or") {return LOGIQUE;}
+("NOT"|"not") {return NOT;}
 [0-9]+ {yylval.intValue=atoi(yytext); return NB;}
 [0-9]+.[0-9]+ {{yylval.floatValue=atof(yytext); return NUMERIC;}}
 ("<="|">="|"<"|">") {return COMP;}

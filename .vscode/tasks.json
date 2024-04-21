@@ -39,7 +39,7 @@
         {
             "label": "Syntax + Lexical",
             "type": "shell",
-            "command": "cd ${fileDirname} && flex ${fileBasenameNoExtension}.l && yacc -d ${fileBasenameNoExtension}.y && gcc y.tab.c -o 0000 && ./0000 input.txt "
+            "command": "cd ${fileDirname} && flex ${fileBasenameNoExtension}.l && yacc -Wno-conflicts-sr -d ${fileBasenameNoExtension}.y && gcc y.tab.c -o 0000 && ./0000 input.txt "
         }
     ]
 }
