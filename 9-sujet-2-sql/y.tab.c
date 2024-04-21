@@ -758,8 +758,8 @@ static const yytype_int16 yyrline[] =
      243,   245,   248,   249,   250,   251,   252,   254,   256,   257,
      259,   265,   266,   268,   268,   269,   270,   271,   271,   273,
      273,   273,   275,   275,   275,   277,   278,   279,   280,   281,
-     282,   283,   285,   287,   290,   293,   296,   297,   298,   299,
-     300,   301,   303,   304,   305,   307,   307,   307
+     282,   283,   285,   287,   290,   295,   301,   302,   303,   304,
+     305,   306,   308,   309,   310,   312,   312,   312
 };
 #endif
 
@@ -1847,81 +1847,86 @@ add_string2(types, (yyvsp[-1].stringValue), num_types);strcpy(tablesChamps[cle].
 
   case 44:
 #line 290 "file.y"
-                                                                                   {if (!is_string_in_array(tables,(yyvsp[-3].stringValue),num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,(yyvsp[-3].stringValue)); exit(EXIT_FAILURE);} else { colonnes+=1;
+                                                                                   {if (!is_string_in_array(tables,(yyvsp[-3].stringValue),num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,(yyvsp[-3].stringValue)); exit(EXIT_FAILURE);} else { 
+int i= check_field_array(tablesChamps,(yyvsp[-3].stringValue),(yyvsp[-1].stringValue),cle);
+colonnes+=1;
 add_string(strings, (yyvsp[-6].stringValue), num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], (yyvsp[-6].stringValue)); num_strings++; 
 add_string2(types, "FOREIGN", num_types);strcpy(tablesChamps[cle].types[num_types], "FOREIGN");num_types++; }}
-#line 1854 "y.tab.c"
+#line 1856 "y.tab.c"
     break;
 
   case 45:
-#line 293 "file.y"
-                                                                {colonnes+=1;add_string(strings, (yyvsp[-6].stringValue), num_strings,0);num_strings++; 
+#line 295 "file.y"
+                                                                {if (!is_string_in_array(tables,(yyvsp[-3].stringValue),num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,(yyvsp[-3].stringValue)); exit(EXIT_FAILURE);};
+colonnes+=1;
+int i= check_field_array(tablesChamps,(yyvsp[-3].stringValue),(yyvsp[-1].stringValue),cle);
+add_string(strings, (yyvsp[-6].stringValue), num_strings,0);num_strings++; 
 add_string(types, "FOREIGN", num_types,2);num_types++;}
-#line 1861 "y.tab.c"
+#line 1866 "y.tab.c"
     break;
 
   case 46:
-#line 296 "file.y"
+#line 301 "file.y"
                                 {if ((yyvsp[-1].intValue)>65535 ) {printf("Erreur ligne %d : taille de la chaine excède 65,535 ",num_ligne);exit(EXIT_FAILURE);} else {(yyval.stringValue)="VARCHAR";}}
-#line 1867 "y.tab.c"
+#line 1872 "y.tab.c"
     break;
 
   case 47:
-#line 297 "file.y"
+#line 302 "file.y"
       {(yyval.stringValue)="INT";}
-#line 1873 "y.tab.c"
+#line 1878 "y.tab.c"
     break;
 
   case 48:
-#line 298 "file.y"
+#line 303 "file.y"
                                  {(yyval.stringValue)="NUMERIC";}
-#line 1879 "y.tab.c"
+#line 1884 "y.tab.c"
     break;
 
   case 49:
-#line 299 "file.y"
+#line 304 "file.y"
            {printf("Erreur ligne %d : taille de la chaine non spécifiée ",num_ligne);exit(EXIT_FAILURE);}
-#line 1885 "y.tab.c"
+#line 1890 "y.tab.c"
     break;
 
   case 50:
-#line 300 "file.y"
+#line 305 "file.y"
                     {printf("Erreur ligne %d : parenthèse ouvrante oubliée ",num_ligne);exit(EXIT_FAILURE);}
-#line 1891 "y.tab.c"
+#line 1896 "y.tab.c"
     break;
 
   case 51:
-#line 301 "file.y"
+#line 306 "file.y"
         {printf("Erreur ligne %d : Type non reconnu \n ",num_ligne);}
-#line 1897 "y.tab.c"
+#line 1902 "y.tab.c"
     break;
 
   case 52:
-#line 303 "file.y"
+#line 308 "file.y"
                  {champs+=1; add_string(strings, (yyvsp[0].stringValue), num_strings,0); num_strings++;}
-#line 1903 "y.tab.c"
+#line 1908 "y.tab.c"
     break;
 
   case 53:
-#line 304 "file.y"
+#line 309 "file.y"
                    {champs+=1;add_string(strings, (yyvsp[0].stringValue), num_strings,0);num_strings++;}
-#line 1909 "y.tab.c"
+#line 1914 "y.tab.c"
     break;
 
   case 54:
-#line 305 "file.y"
+#line 310 "file.y"
                        { printf("Erreur ligne %d: Virgule manquante \n",num_ligne); exit(EXIT_FAILURE); }
-#line 1915 "y.tab.c"
+#line 1920 "y.tab.c"
     break;
 
   case 57:
-#line 307 "file.y"
+#line 312 "file.y"
                                      {printf("Erreur ligne %d : contrainte non valide ",num_ligne);exit(EXIT_FAILURE);}
-#line 1921 "y.tab.c"
+#line 1926 "y.tab.c"
     break;
 
 
-#line 1925 "y.tab.c"
+#line 1930 "y.tab.c"
 
       default: break;
     }
@@ -2153,7 +2158,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 308 "file.y"
+#line 313 "file.y"
 
 
 #include "lex.yy.c" 

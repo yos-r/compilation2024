@@ -287,10 +287,15 @@ add_string2(types, $2, num_types);strcpy(tablesChamps[cle].types[num_types], $2)
 | listecreation ',' ID type contrainte {colonnes+=1;add_string(strings, $3, num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], $3);num_strings++;
 add_string2(types, $4, num_types);strcpy(tablesChamps[cle].types[num_types], $4);num_types++;
 };
-| listecreation ',' FOREIGN_KEY PAROUV ID PARFERM  REFERENCES ID PAROUV ID PARFERM {if (!is_string_in_array(tables,$8,num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,$8); exit(EXIT_FAILURE);} else { colonnes+=1;
+| listecreation ',' FOREIGN_KEY PAROUV ID PARFERM  REFERENCES ID PAROUV ID PARFERM {if (!is_string_in_array(tables,$8,num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,$8); exit(EXIT_FAILURE);} else { 
+int i= check_field_array(tablesChamps,$8,$10,cle);
+colonnes+=1;
 add_string(strings, $5, num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], $5); num_strings++; 
 add_string2(types, "FOREIGN", num_types);strcpy(tablesChamps[cle].types[num_types], "FOREIGN");num_types++; }};
-| FOREIGN_KEY PAROUV ID PARFERM REFERENCES ID PAROUV ID PARFERM {colonnes+=1;add_string(strings, $3, num_strings,0);num_strings++; 
+| FOREIGN_KEY PAROUV ID PARFERM REFERENCES ID PAROUV ID PARFERM {if (!is_string_in_array(tables,$6,num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,$6); exit(EXIT_FAILURE);};
+colonnes+=1;
+int i= check_field_array(tablesChamps,$6,$8,cle);
+add_string(strings, $3, num_strings,0);num_strings++; 
 add_string(types, "FOREIGN", num_types,2);num_types++;};
 /* types de champs des tables */
 type: VARCHAR PAROUV NB PARFERM {if ($3>65535 ) {printf("Erreur ligne %d : taille de la chaine excède 65,535 ",num_ligne);exit(EXIT_FAILURE);} else {$$="VARCHAR";}} 
