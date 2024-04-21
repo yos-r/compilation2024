@@ -58,7 +58,7 @@ int is_string_in_array(char* strings[],char* str,int num_strings) {
     }
     return 0; 
 }
-int are_all_values_in_types(char types[][100], int types_size, char* strings[], int num_strings) {
+int are_all_values_in_types(char* table, char types[][100], int types_size, char* strings[], int num_strings) {
     for (int i = 0; i < num_strings; i++) {
         int found = 0;
         for (int j = 0; j < types_size; j++) {
@@ -68,7 +68,8 @@ int are_all_values_in_types(char types[][100], int types_size, char* strings[], 
             }
         }
         if (!found) {
-            
+            printf("Erreur ligne %d: Le champ ' %s '  n'existe pas dans la table %s \n",num_ligne,strings[i],table);
+            exit(EXIT_FAILURE);
             return 0; // Not all values found in types array
         }
     }
@@ -207,11 +208,8 @@ CMD:
 /* selection */
 SELECT choix FROM ID condition {if (is_string_in_array(tables,$4,num_tables)) {
     int key=findKey(tablesChamps,$4,cle);
-        int result = are_all_values_in_types(tablesChamps[key].champs, tablesChamps[key].num_values, strings,num_strings);
-        display_champs(tablesChamps[key]);
-        printf("Ligne %d: result =%d | %d \n",num_ligne,result, tablesChamps[key].num_values);
-// int a= are_all_strings_in_array($4,strings,num_strings,tablesChamps[key].champs,tablesChamps[key].num_values) ; 
-printf("Ligne %d : Sélection réussie depuis la table %s \n",num_ligne,$4);} 
+        int result = are_all_values_in_types($4,tablesChamps[key].champs, tablesChamps[key].num_values, strings,num_strings);
+ printf("Ligne %d : Sélection réussie depuis la table %s \n",num_ligne,$4);} 
         else { printf("Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$4); exit(EXIT_FAILURE); };}
 | SELECT error { printf("Erreur ligne %d: Identifiant manquant ou mal formé \n",num_ligne); exit(EXIT_FAILURE); };
 /* creation d'une table */
