@@ -64,24 +64,26 @@ extern int yydebug;
     NB = 270,
     NUMERIC = 271,
     CREATE = 272,
-    INSERT = 273,
-    INTO = 274,
-    TABLE = 275,
-    INT = 276,
-    VARCHAR = 277,
-    VALUES = 278,
-    NULLL = 279,
-    POINTVIRGULE = 280,
-    COMMENT = 281,
-    UPDATE = 282,
-    DELETE = 283,
-    SET = 284,
-    ALL = 285,
-    DROP = 286,
-    EGAL = 287,
-    DIFF = 288,
-    LOGIQUE = 289,
-    NOT = 290
+    NUMERICTYPE = 273,
+    INSERT = 274,
+    INTO = 275,
+    TABLE = 276,
+    INT = 277,
+    VARCHAR = 278,
+    VALUES = 279,
+    NULLL = 280,
+    POINTVIRGULE = 281,
+    COMMENT = 282,
+    UPDATE = 283,
+    DELETE = 284,
+    SET = 285,
+    ALL = 286,
+    DROP = 287,
+    EGAL = 288,
+    DIFF = 289,
+    LOGIQUE = 290,
+    NOT = 291,
+    DESCRIBE = 292
   };
 #endif
 /* Tokens.  */
@@ -100,36 +102,38 @@ extern int yydebug;
 #define NB 270
 #define NUMERIC 271
 #define CREATE 272
-#define INSERT 273
-#define INTO 274
-#define TABLE 275
-#define INT 276
-#define VARCHAR 277
-#define VALUES 278
-#define NULLL 279
-#define POINTVIRGULE 280
-#define COMMENT 281
-#define UPDATE 282
-#define DELETE 283
-#define SET 284
-#define ALL 285
-#define DROP 286
-#define EGAL 287
-#define DIFF 288
-#define LOGIQUE 289
-#define NOT 290
+#define NUMERICTYPE 273
+#define INSERT 274
+#define INTO 275
+#define TABLE 276
+#define INT 277
+#define VARCHAR 278
+#define VALUES 279
+#define NULLL 280
+#define POINTVIRGULE 281
+#define COMMENT 282
+#define UPDATE 283
+#define DELETE 284
+#define SET 285
+#define ALL 286
+#define DROP 287
+#define EGAL 288
+#define DIFF 289
+#define LOGIQUE 290
+#define NOT 291
+#define DESCRIBE 292
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 160 "file.y"
+#line 179 "file.y"
 
     int intValue;
     float floatValue;
     char *stringValue;
 
-#line 133 "y.tab.h"
+#line 137 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

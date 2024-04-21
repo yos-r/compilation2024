@@ -34,8 +34,19 @@ struct KeyValue {
 int cle=0; //nombre de clés/ enregistrements dans tablesChamps
 struct KeyValue tablesChamps[MAX_KEYS];
 // affichage du tableau des enregistrements
+// HELP FUNCTIONS: manipulation des tableaux et des chaines
+int is_string_in_array(char* strings[],char* str,int num_strings) {
+    for (int i = 0; i < num_strings; i++) {
+        if (strcmp(strings[i], str) == 0) {
+            return 1;
+        }
+    }
+    return 0; 
+}
 void displayArray(struct KeyValue array[], int size) {
     for (int i = 0; i < size; i++) {
+         if (is_string_in_array(tables,array[i].key,num_tables)){
+
         // printf("Struct %d:\n", i + 1);
         printf("Table: %s\n", array[i].key);
         printf("    Champs:\n");
@@ -47,17 +58,10 @@ void displayArray(struct KeyValue array[], int size) {
             printf("        %s\n", array[i].types[j]);
         }
         printf("\n");
-    }
-}
-// HELP FUNCTIONS: manipulation des tableaux et des chaines
-int is_string_in_array(char* strings[],char* str,int num_strings) {
-    for (int i = 0; i < num_strings; i++) {
-        if (strcmp(strings[i], str) == 0) {
-            return 1;
         }
     }
-    return 0; 
 }
+
 int are_all_values_in_types(char* table, char types[][100], int types_size, char* strings[], int num_strings) {
     for (int i = 0; i < num_strings; i++) {
         int found = 0;
@@ -96,6 +100,21 @@ void add_string(char* strings[], char* str,int num_strings,int choix ) {
     } else {
         printf("Erreur '%s'.\n", str);
     }
+}
+int check_field_array(struct KeyValue array[], char *table,char* field,int size){
+    for (int i = 0; i < size; i++) {
+        if (strcmp(array[i].key, table) == 0) {
+            // table trouv'ee, recchercher dans les champs
+             for (int j = 0; j < array[i].num_values; j++){
+                if (strcmp(array[i].champs[j],field)==0) {
+                    return 1;
+                }
+             }
+        }
+    }
+    printf("Erreur ligne %d: Le champ ' %s '  n'existe pas dans la table %s \n",num_ligne,field,table);
+    exit(EXIT_FAILURE); 
+    return -1;
 }
 void add_string2(char* strings[], char* str,int num_strings ) {
     if (num_strings < MAX_STRINGS) {
@@ -178,6 +197,7 @@ int countLines(const char *filename) {
 %token <intValue>NB
 %token<floatValue> NUMERIC
 %token CREATE
+%token NUMERICTYPE
 %token INSERT
 %token INTO
 %token TABLE
@@ -196,6 +216,7 @@ int countLines(const char *filename) {
 %token DIFF
 %token LOGIQUE
 %token NOT
+%token DESCRIBE
 %type <intValue> condition
 %type <stringValue> type
 
@@ -205,8 +226,8 @@ S: CMD POINTVIRGULE
 | COMMENT {printf("Ligne %d : Commentaire \n ",num_ligne);}
 | CMD error { printf("Erreur Ligne %d : point virgule manquant \n",num_ligne); exit(EXIT_FAILURE);}
 CMD: 
-/* selection */
-SELECT choix FROM ID condition {if (is_string_in_array(tables,$4,num_tables)) {
+DESCRIBE {printf("Ligne %d : Description de la base de donnees \n",num_ligne); displayArray(tablesChamps,cle);}
+|/* selection */SELECT choix FROM ID condition {if (is_string_in_array(tables,$4,num_tables)) {
     int key=findKey(tablesChamps,$4,cle);
         int result = are_all_values_in_types($4,tablesChamps[key].champs, tablesChamps[key].num_values, strings,num_strings);
  printf("Ligne %d : Sélection réussie depuis la table %s \n",num_ligne,$4);} 
@@ -223,7 +244,7 @@ strcpy(tablesChamps[cle].key, $3);tablesChamps[cle].num_values=num_strings;cle++
 | INSERT INTO ID VALUES PAROUV listeinsertion PARFERM {if (is_string_in_array(tables,$3,num_tables)) {int clef= findKey(tablesChamps,$3,cle); /* chercher la cle*/if (num_champs==tablesChamps[clef].num_values) printf("Ligne %d : Insertion réussie dans la table %s \n",num_ligne,$3); else {printf("Erreur Ligne %d : La table %s possede %d colonnes, vous avez fourni %d ",num_ligne,$3,tablesChamps[clef].num_values,num_champs); exit(EXIT_FAILURE);};} 
         else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$3); exit(EXIT_FAILURE); };}
 /* mise à jour d'une table */
-| UPDATE ID SET ID EGAL value {if (is_string_in_array(tables,$2,num_tables)) {printf("Ligne %d : Mise à jour de la table %s réussie \n",num_ligne,$2);} else {printf("Erreur Ligne %d : La table %s n'existe pas ",num_ligne,$2); exit(EXIT_FAILURE);}}
+| UPDATE ID SET ID EGAL value {if (is_string_in_array(tables,$2,num_tables)) {int a= check_field_array(tablesChamps,$2,$4,cle);printf("Ligne %d : Mise à jour de la table %s réussie \n",num_ligne,$2);} else {printf("Erreur Ligne %d : La table %s n'existe pas ",num_ligne,$2); exit(EXIT_FAILURE);}}
 | UPDATE ID SET error EGAL value  {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
 | UPDATE error SET error EGAL value  {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
 | UPDATE ID SET ID error value  {printf("Erreur Ligne %d : Opérateur incorrect, la mise à jour est effectuée avec = ",num_ligne); exit(EXIT_FAILURE);}
@@ -270,9 +291,9 @@ add_string(types, "FOREIGN", num_types,2);num_types++;};
 /* types de champs des tables */
 type: VARCHAR PAROUV NB PARFERM {if ($3>65535 ) {printf("Erreur ligne %d : taille de la chaine excède 65,535 ",num_ligne);exit(EXIT_FAILURE);} else {$$="VARCHAR";}} 
 | INT {$$="INT";}
+| NUMERICTYPE PAROUV NB  PARFERM {$$="NUMERIC";}
 | VARCHAR  {printf("Erreur ligne %d : taille de la chaine non spécifiée ",num_ligne);exit(EXIT_FAILURE);} 
 | VARCHAR error NB  {printf("Erreur ligne %d : parenthèse ouvrante oubliée ",num_ligne);exit(EXIT_FAILURE);} 
-| NUMERIC PAROUV NB ',' NB PARFERM {$$="NUMERIC";}
 | error {printf("Erreur ligne %d : Type non reconnu \n ",num_ligne);}
 /* liste selection  */
 listeselect : ID {champs+=1; add_string(strings, $1, num_strings,0); num_strings++;}
@@ -302,23 +323,5 @@ for(int i=0;i<lines;i++) {
      num_types=0;
      num_champs=0;
      };
-    
-    /* display_strings(tables, num_tables);
-    add_string(tables,"fsadf",1,0);
-    delete_string(tables,"asd",2);  */
-    display_strings(tables, num_tables);
 
-
-// tableau d'enregistrement
-    /* struct KeyValue myArray[MAX_KEYS];
-     strcpy(myArray[0].key, "example_key_1");
-    strcpy(myArray[0].champs[0], "value1_1");
-    strcpy(myArray[0].champs[1], "value1_2");
-    myArray[0].num_values = 2;
-
-    // Set values for the second struct in the array
-    strcpy(myArray[1].key, "example_key_2");
-    strcpy(myArray[1].champs[0], "value2_1");
-    myArray[1].num_values = 1; */
-    displayArray(tablesChamps,cle);
 return 0;}
