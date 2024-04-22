@@ -1,0 +1,10 @@
+-- commentaire 
+create table xyz (id INT, abc NUMERIC(22), def VARCHAR(244),ghi VARCHAR(244));
+create table asd (id INT , klm INT, FOREIGN KEY (pno) REFERENCES xyz (def));
+select * from asd ;
+select id from xyz where id = 23 ;
+update asd set id = 11;
+DROP TABLE  asd ;
+insert into xyz values(2, "234" ,2,"erer") ;
+DELETE FROM xyz where id>1 or def<1;
+DESCRIBE ;

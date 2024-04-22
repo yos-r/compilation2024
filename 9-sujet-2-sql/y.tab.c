@@ -1706,7 +1706,7 @@ strcpy(tablesChamps[cle].key, (yyvsp[-3].stringValue));tablesChamps[cle].num_val
 
   case 11:
 #line 265 "file.y"
-                                                      {if (is_string_in_array(tables,(yyvsp[-4].stringValue),num_tables)) {int clef= findKey(tablesChamps,(yyvsp[-4].stringValue),cle); /* chercher la cle*/if (num_champs==tablesChamps[clef].num_values) printf("Ligne %d : Insertion réussie dans la table %s \n",num_ligne,(yyvsp[-4].stringValue)); else {printf("Erreur Ligne %d : La table %s possede %d colonnes, vous avez fourni %d ",num_ligne,(yyvsp[-4].stringValue),tablesChamps[clef].num_values,num_champs); exit(EXIT_FAILURE);};} 
+                                                      {if (is_string_in_array(tables,(yyvsp[-4].stringValue),num_tables)) {int clef= findKey(tablesChamps,(yyvsp[-4].stringValue),cle); printf("le nombre de champs %d ",num_champs); /* chercher la cle*/if (num_champs==tablesChamps[clef].num_values) printf("Ligne %d : Insertion réussie dans la table %s \n",num_ligne,(yyvsp[-4].stringValue)); else {printf("Erreur Ligne %d : La table %s possede %d colonnes, vous avez fourni %d ",num_ligne,(yyvsp[-4].stringValue),tablesChamps[clef].num_values,num_champs); exit(EXIT_FAILURE);};} 
         else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[-4].stringValue)); exit(EXIT_FAILURE); };}
 #line 1712 "y.tab.c"
     break;
@@ -1808,37 +1808,37 @@ strcpy(tablesChamps[cle].key, (yyvsp[-3].stringValue));tablesChamps[cle].num_val
 
   case 35:
 #line 297 "file.y"
-                                            {num_champs++;}
+                                            {printf("%f ",(yyvsp[0].floatValue)); num_champs++;}
 #line 1813 "y.tab.c"
     break;
 
   case 36:
 #line 298 "file.y"
-                            {num_champs++;}
+                            {printf("%s ",(yyvsp[0].stringValue));num_champs++;}
 #line 1819 "y.tab.c"
     break;
 
   case 37:
 #line 299 "file.y"
-                        {num_champs++;}
+                        {printf("%d ",(yyvsp[0].intValue));num_champs++;}
 #line 1825 "y.tab.c"
     break;
 
   case 38:
 #line 300 "file.y"
-          {num_champs++;}
+          {printf("%f ",(yyvsp[0].floatValue));num_champs++;}
 #line 1831 "y.tab.c"
     break;
 
   case 39:
 #line 301 "file.y"
-         {num_champs++;}
+         {printf("%s ",(yyvsp[0].stringValue));num_champs++;}
 #line 1837 "y.tab.c"
     break;
 
   case 40:
 #line 302 "file.y"
-     {num_champs++;}
+     {printf("%d ",(yyvsp[0].intValue));num_champs++;}
 #line 1843 "y.tab.c"
     break;
 
@@ -2185,7 +2185,7 @@ int main(int argc, char *argv[]){
     ++argv; --argc;
 if ( argc > 0 ) yyin = fopen( argv[0], "r" );
 else yyin = stdin;
-int lines=countLines("input.txt");
+int lines=countLines(argv[0]);
 for(int i=0;i<lines;i++) {
     yyparse();
     // réinitialisation des variables à chaque nouvelle commande

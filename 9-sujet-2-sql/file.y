@@ -262,7 +262,7 @@ strcpy(tablesChamps[cle].key, $3);tablesChamps[cle].num_values=num_strings;cle++
 | CREATE TABLE error PAROUV listecreation PARFERM {printf("Erreur Ligne %d : Identifiant manquant \n",num_ligne); exit(EXIT_FAILURE);}
 | CREATE error ID PAROUV listecreation PARFERM {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
 /* insertion de lignes */
-| INSERT INTO ID VALUES PAROUV listeinsertion PARFERM {if (is_string_in_array(tables,$3,num_tables)) {int clef= findKey(tablesChamps,$3,cle); /* chercher la cle*/if (num_champs==tablesChamps[clef].num_values) printf("Ligne %d : Insertion réussie dans la table %s \n",num_ligne,$3); else {printf("Erreur Ligne %d : La table %s possede %d colonnes, vous avez fourni %d ",num_ligne,$3,tablesChamps[clef].num_values,num_champs); exit(EXIT_FAILURE);};} 
+| INSERT INTO ID VALUES PAROUV listeinsertion PARFERM {if (is_string_in_array(tables,$3,num_tables)) {int clef= findKey(tablesChamps,$3,cle); printf("le nombre de champs %d ",num_champs); /* chercher la cle*/if (num_champs==tablesChamps[clef].num_values) printf("Ligne %d : Insertion réussie dans la table %s \n",num_ligne,$3); else {printf("Erreur Ligne %d : La table %s possede %d colonnes, vous avez fourni %d ",num_ligne,$3,tablesChamps[clef].num_values,num_champs); exit(EXIT_FAILURE);};} 
         else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$3); exit(EXIT_FAILURE); };}
 /* mise à jour d'une table */
 | UPDATE ID SET ID EGAL value {if (is_string_in_array(tables,$2,num_tables)) {int a= check_field_array(tablesChamps,$2,$4,cle);printf("Ligne %d : Mise à jour de la table %s réussie \n",num_ligne,$2);} else {printf("Erreur Ligne %d : La table %s n'existe pas ",num_ligne,$2); exit(EXIT_FAILURE);}}
@@ -294,12 +294,12 @@ op: EGAL | DIFF | COMP ;
 /* valeurs possibles  */
 value: NB | STRING | NUMERIC;
 /* liste insertion  */
-listeinsertion : listeinsertion ',' NUMERIC {num_champs++;} 
-| listeinsertion ',' STRING {num_champs++;} 
-| listeinsertion ',' NB {num_champs++;} 
-| NUMERIC {num_champs++;} 
-| STRING {num_champs++;}
-| NB {num_champs++;}
+listeinsertion : listeinsertion ',' NUMERIC {printf("%f ",$3); num_champs++;} 
+| listeinsertion ',' STRING {printf("%s ",$3);num_champs++;} 
+| listeinsertion ',' NB {printf("%d ",$3);num_champs++;} 
+| NUMERIC {printf("%f ",$1);num_champs++;} 
+| STRING {printf("%s ",$1);num_champs++;}
+| NB {printf("%d ",$1);num_champs++;}
 | listeinsertion ',' error { printf("Erreur ligne %d: Erreur d'insertion \n",num_ligne); exit(EXIT_FAILURE); }
 /* liste creation  */
 listecreation : ID type contrainte {colonnes+=1;add_string(strings, $1, num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], $1);num_strings++;
@@ -338,7 +338,7 @@ int main(int argc, char *argv[]){
     ++argv; --argc;
 if ( argc > 0 ) yyin = fopen( argv[0], "r" );
 else yyin = stdin;
-int lines=countLines("input.txt");
+int lines=countLines(argv[0]);
 for(int i=0;i<lines;i++) {
     yyparse();
     // réinitialisation des variables à chaque nouvelle commande
