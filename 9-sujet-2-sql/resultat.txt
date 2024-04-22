@@ -1,0 +1,26 @@
+Ligne 1 : Commentaire 
+           Ligne 2: Colonnes de la table xyz = 4 
+Ligne 2 : Création de la table xyz réussie 
+             Ligne 3: Colonnes de la table asd = 3 
+Ligne 3 : Création de la table asd réussie 
+     Ligne 4 : Mise à jour de la table asd réussie 
+    Ligne 5 : 3 Champs selectionnes 
+ Ligne 5 : Sélection réussie depuis la table asd 
+   Ligne 6: Champs selectionnes = 1 
+      Ligne 6 : Sélection réussie depuis la table xyz 
+   Ligne 7 : Suppression de la table asd réussie
+ Ligne 8 : Commentaire 
+       Ligne 9: 2 prédicats dans la clause 
+Ligne 9 : Suppression de lignes réussie depuis la table xyz 
+Ligne 10 : Description de la base de donnees 
+Table: xyz
+    Champs:
+        id
+        agee
+        age
+        adresse
+    Types:
+        INT
+        NUMERIC
+        VARCHAR
+        VARCHAR
