@@ -219,6 +219,7 @@ int countLines(const char *filename) {
 %token DESCRIBE
 %type <intValue> condition
 %type <stringValue> type
+%type <intValue> choix
 
 %%
 /* axiome */ 
@@ -231,6 +232,7 @@ DESCRIBE {printf("Ligne %d : Description de la base de donnees \n",num_ligne); d
 SELECT choix FROM ID condition {if (is_string_in_array(tables,$4,num_tables)) {
     int key=findKey(tablesChamps,$4,cle);
         int result = are_all_values_in_types($4,tablesChamps[key].champs, tablesChamps[key].num_values, strings,num_strings);
+        if ($2==0){printf("Ligne %d : %d Champs selectionnes \n ",num_ligne,tablesChamps[key].num_values);}
  printf("Ligne %d : Sélection réussie depuis la table %s \n",num_ligne,$4);} 
         else { printf("Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$4); exit(EXIT_FAILURE); };}
 | SELECT error { printf("Erreur ligne %d: Identifiant manquant ou mal formé \n",num_ligne); exit(EXIT_FAILURE); };
@@ -262,8 +264,8 @@ strcpy(tablesChamps[cle].key, $3);tablesChamps[cle].num_values=num_strings;cle++
      if ($4==1) {printf("Ligne %d : La table %s est vidée \n",num_ligne,$3);}; printf("Ligne %d : Suppression de lignes réussie depuis la table %s \n",num_ligne,$3);} 
         else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,$3); exit(EXIT_FAILURE); };}
 /* choix de selection */
-choix: ALL {printf(" Ligne %d: Tous les champs selectionnes\n",num_ligne);}
-| listeselect {printf(" Ligne %d: Champs selectionnes = %d \n",num_ligne,champs);}
+choix: ALL {$$=0; }
+| listeselect {$$=1;printf(" Ligne %d: Champs selectionnes = %d \n",num_ligne,champs);}
 /* condition dans les requetes */
 condition: WHERE listecondition  {$$=0; if (predicat>1) printf("Ligne %d: %d prédicats dans la clause \n",num_ligne,predicat);} |  {$$=1;};
 listecondition: listecondition LOGIQUE not ID op value {predicat++;add_string2(strings, $4, num_strings); num_strings++;}
