@@ -75,9 +75,7 @@
 int yylex(void); 
 int yyerror(char*s); 
 
-int champs=0;
-int colonnes=0;
-int predicat=0;
+
 #define MAX_STRINGS 100 
 #define MAX_LENGTH 50  
 #define MAX_KEYS 10    
@@ -85,14 +83,19 @@ int predicat=0;
 
 char* strings[MAX_STRINGS];
 char* types[MAX_STRINGS];
-
 char* tables[MAX_LENGTH]; //table des tables
-int num_strings = 0;
-int num_types=0;
-int num_champs=0;
-int num_tables=0;
-int num_ligne=1;
-// enregistrement cle valeur pour stocker les tables et les nombs de champs
+
+int num_strings = 0; // chaines dans les requetes
+int num_types=0; // types dans les requetes de creation
+int num_champs=0; // nombre de champs
+int champs=0; // nombre de champs
+int colonnes=0; // nombre de colonnes
+int predicat=0; //nombre de predicats 
+int num_tables=0; // nombre de tables
+int num_ligne=1; // nombre de ligne
+
+
+// ⭐⭐ enregistrement cle valeur pour stocker les tables et les nombs de champs
 struct KeyValue {
     char key[100]; // Assuming maximum length of the key is 100 characters
     char champs[MAX_LENGTH][100]; // Assuming maximum length of each value is 100 characters
@@ -100,9 +103,12 @@ struct KeyValue {
     int num_values; // Number of values in the array
 };
 int cle=0; //nombre de clés/ enregistrements dans tablesChamps
-struct KeyValue tablesChamps[MAX_KEYS];
-// affichage du tableau des enregistrements
+struct KeyValue tablesChamps[MAX_KEYS]; // tableau d'enregistrement: décrit la base de données
+
+
 // HELP FUNCTIONS: manipulation des tableaux et des chaines
+
+// verifie si une chaine appartient a un tableau
 int is_string_in_array(char* strings[],char* str,int num_strings) {
     for (int i = 0; i < num_strings; i++) {
         if (strcmp(strings[i], str) == 0) {
@@ -111,6 +117,7 @@ int is_string_in_array(char* strings[],char* str,int num_strings) {
     }
     return 0; 
 }
+// ⭐⭐ affichage de la table des champs
 void displayArray(struct KeyValue array[], int size) {
     for (int i = 0; i < size; i++) {
          if (is_string_in_array(tables,array[i].key,num_tables)){
@@ -130,6 +137,7 @@ void displayArray(struct KeyValue array[], int size) {
     }
 }
 
+// ⭐⭐ verifie si toutes les chaines d'un tableau existent dans un autre tableau
 int are_all_values_in_types(char* table, char types[][100], int types_size, char* strings[], int num_strings) {
     for (int i = 0; i < num_strings; i++) {
         int found = 0;
@@ -147,12 +155,14 @@ int are_all_values_in_types(char* table, char types[][100], int types_size, char
     }
     return 1; // All values found in types array
 }
+// affichage des champs d'un enreigstrement clé valeur
 void display_champs(struct KeyValue kv) {
     printf("value array for key '%s':\n", kv.key);
     for (int i = 0; i < kv.num_values; i++) {
         printf("%s\t", kv.champs[i]);
     }
 }
+//ajout d'une chaine dans une table de chaine avec verification de duplicat: declenche une erreur
 void add_string(char* strings[], char* str,int num_strings,int choix ) {
     if (num_strings < MAX_STRINGS) {
         if (!is_string_in_array(strings,str,num_strings)) {
@@ -169,6 +179,7 @@ void add_string(char* strings[], char* str,int num_strings,int choix ) {
         printf("Erreur '%s'.\n", str);
     }
 }
+// verfie si un champ  existe dans une table ou non
 int check_field_array(struct KeyValue array[], char *table,char* field,int size){
     for (int i = 0; i < size; i++) {
         if (strcmp(array[i].key, table) == 0) {
@@ -184,10 +195,12 @@ int check_field_array(struct KeyValue array[], char *table,char* field,int size)
     exit(EXIT_FAILURE); 
     return -1;
 }
+//ajout simple d'une chaine dans une table de chaine sans verification de duplicat
 void add_string2(char* strings[], char* str,int num_strings ) {
     if (num_strings < MAX_STRINGS) {
         strings[num_strings] = strdup(str);}
 }
+//suppression d'une chaine d'un tableau
 void delete_string(char* strings[], char* str, int num_strings) {
     int i, j;
     for (i = 0; i < num_strings; i++) {
@@ -203,6 +216,7 @@ void delete_string(char* strings[], char* str, int num_strings) {
     // String not found
     printf("String '%s' not found in the array.\n", str);
 }
+// trouve la cle de la table dans le tableau d'entregistement
 int findKey(struct KeyValue array[], char *searchKey,int size){
     for (int i = 0; i < size; i++) {
         if (strcmp(array[i].key, searchKey) == 0) {
@@ -211,12 +225,14 @@ int findKey(struct KeyValue array[], char *searchKey,int size){
     }
     return -1;
 }
+// affichage simple d'un tableau  de chaines
 void display_strings(char* strings[], int num_strings) {
-    printf("Strings in the array:\n");
+    printf("Affichage des chaines du tableau:\n");
     for (int i = 0; i < num_strings; i++) {
         printf("%s\n", strings[i]);
     }
 }
+// vider un tableau
 void empty_array(char* strings[] ,int numstrings) {
     for (int i = 0; i < num_strings; i++) {
         free(strings[i]);
@@ -224,6 +240,7 @@ void empty_array(char* strings[] ,int numstrings) {
     }
     num_strings = 0; 
 }
+//compter le nombre de lignes dans un fichier txt
 int countLines(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
@@ -243,7 +260,7 @@ int countLines(const char *filename) {
     return lines;
 }
 
-#line 247 "y.tab.c"
+#line 264 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -369,13 +386,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 179 "file.y"
+#line 196 "file.y"
 
     int intValue;
     float floatValue;
     char *stringValue;
 
-#line 379 "y.tab.c"
+#line 396 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -754,12 +771,12 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   226,   226,   227,   228,   230,   232,   238,   240,   244,
-     245,   247,   250,   251,   252,   253,   254,   256,   258,   259,
-     261,   267,   268,   270,   270,   271,   272,   273,   273,   275,
-     275,   275,   277,   277,   277,   279,   280,   281,   282,   283,
-     284,   285,   287,   289,   292,   297,   303,   304,   305,   306,
-     307,   308,   310,   311,   312,   314,   314,   314
+       0,   243,   243,   244,   245,   248,   250,   256,   258,   262,
+     263,   265,   268,   269,   270,   271,   272,   274,   276,   277,
+     279,   285,   286,   288,   288,   289,   290,   291,   291,   293,
+     293,   293,   295,   295,   295,   297,   298,   299,   300,   301,
+     302,   303,   305,   307,   310,   315,   321,   322,   323,   324,
+     325,   326,   328,   329,   330,   332,   332,   332
 };
 #endif
 
@@ -1632,302 +1649,302 @@ yyreduce:
   switch (yyn)
     {
   case 3:
-#line 227 "file.y"
+#line 244 "file.y"
           {printf("Ligne %d : Commentaire \n ",num_ligne);}
-#line 1638 "y.tab.c"
+#line 1655 "y.tab.c"
     break;
 
   case 4:
-#line 228 "file.y"
+#line 245 "file.y"
             { printf("Erreur Ligne %d : point virgule manquant \n",num_ligne); exit(EXIT_FAILURE);}
-#line 1644 "y.tab.c"
+#line 1661 "y.tab.c"
     break;
 
   case 5:
-#line 230 "file.y"
+#line 248 "file.y"
          {printf("Ligne %d : Description de la base de donnees \n",num_ligne); displayArray(tablesChamps,cle);}
-#line 1650 "y.tab.c"
+#line 1667 "y.tab.c"
     break;
 
   case 6:
-#line 232 "file.y"
+#line 250 "file.y"
                                {if (is_string_in_array(tables,(yyvsp[-1].stringValue),num_tables)) {
     int key=findKey(tablesChamps,(yyvsp[-1].stringValue),cle);
         int result = are_all_values_in_types((yyvsp[-1].stringValue),tablesChamps[key].champs, tablesChamps[key].num_values, strings,num_strings);
         if ((yyvsp[-3].intValue)==0){printf("Ligne %d : %d Champs selectionnes \n ",num_ligne,tablesChamps[key].num_values);}
  printf("Ligne %d : Sélection réussie depuis la table %s \n",num_ligne,(yyvsp[-1].stringValue));} 
         else { printf("Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[-1].stringValue)); exit(EXIT_FAILURE); };}
-#line 1661 "y.tab.c"
+#line 1678 "y.tab.c"
     break;
 
   case 7:
-#line 238 "file.y"
+#line 256 "file.y"
                { printf("Erreur ligne %d: Identifiant manquant ou mal formé \n",num_ligne); exit(EXIT_FAILURE); }
-#line 1667 "y.tab.c"
+#line 1684 "y.tab.c"
     break;
 
   case 8:
-#line 240 "file.y"
+#line 258 "file.y"
                                                 {add_string(tables,(yyvsp[-3].stringValue),num_tables,1); printf(" Ligne %d: Colonnes de la table %s = %d \n",num_ligne,(yyvsp[-3].stringValue),colonnes);num_tables++;
 printf("Ligne %d : Création de la table %s réussie \n",num_ligne,(yyvsp[-3].stringValue));
 strcpy(tablesChamps[cle].key, (yyvsp[-3].stringValue));tablesChamps[cle].num_values=num_strings;cle++;
 }
-#line 1676 "y.tab.c"
+#line 1693 "y.tab.c"
     break;
 
   case 9:
-#line 244 "file.y"
+#line 262 "file.y"
                                                   {printf("Erreur Ligne %d : Identifiant manquant \n",num_ligne); exit(EXIT_FAILURE);}
-#line 1682 "y.tab.c"
+#line 1699 "y.tab.c"
     break;
 
   case 10:
-#line 245 "file.y"
+#line 263 "file.y"
                                                {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
-#line 1688 "y.tab.c"
+#line 1705 "y.tab.c"
     break;
 
   case 11:
-#line 247 "file.y"
+#line 265 "file.y"
                                                       {if (is_string_in_array(tables,(yyvsp[-4].stringValue),num_tables)) {int clef= findKey(tablesChamps,(yyvsp[-4].stringValue),cle); /* chercher la cle*/if (num_champs==tablesChamps[clef].num_values) printf("Ligne %d : Insertion réussie dans la table %s \n",num_ligne,(yyvsp[-4].stringValue)); else {printf("Erreur Ligne %d : La table %s possede %d colonnes, vous avez fourni %d ",num_ligne,(yyvsp[-4].stringValue),tablesChamps[clef].num_values,num_champs); exit(EXIT_FAILURE);};} 
         else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[-4].stringValue)); exit(EXIT_FAILURE); };}
-#line 1695 "y.tab.c"
+#line 1712 "y.tab.c"
     break;
 
   case 12:
-#line 250 "file.y"
+#line 268 "file.y"
                               {if (is_string_in_array(tables,(yyvsp[-4].stringValue),num_tables)) {int a= check_field_array(tablesChamps,(yyvsp[-4].stringValue),(yyvsp[-2].stringValue),cle);printf("Ligne %d : Mise à jour de la table %s réussie \n",num_ligne,(yyvsp[-4].stringValue));} else {printf("Erreur Ligne %d : La table %s n'existe pas ",num_ligne,(yyvsp[-4].stringValue)); exit(EXIT_FAILURE);}}
-#line 1701 "y.tab.c"
+#line 1718 "y.tab.c"
     break;
 
   case 13:
-#line 251 "file.y"
+#line 269 "file.y"
                                   {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
-#line 1707 "y.tab.c"
+#line 1724 "y.tab.c"
     break;
 
   case 14:
-#line 252 "file.y"
+#line 270 "file.y"
                                      {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
-#line 1713 "y.tab.c"
+#line 1730 "y.tab.c"
     break;
 
   case 15:
-#line 253 "file.y"
+#line 271 "file.y"
                                 {printf("Erreur Ligne %d : Opérateur incorrect, la mise à jour est effectuée avec = ",num_ligne); exit(EXIT_FAILURE);}
-#line 1719 "y.tab.c"
+#line 1736 "y.tab.c"
     break;
 
   case 16:
-#line 254 "file.y"
+#line 272 "file.y"
                               {printf("Erreur Ligne %d : ",num_ligne); exit(EXIT_FAILURE);}
-#line 1725 "y.tab.c"
+#line 1742 "y.tab.c"
     break;
 
   case 17:
-#line 256 "file.y"
+#line 274 "file.y"
                 {if (is_string_in_array(tables,(yyvsp[0].stringValue),num_tables)) { delete_string(tables,(yyvsp[0].stringValue),num_tables); num_tables--;printf("Ligne %d : Suppression de la table %s réussie\n",num_ligne,(yyvsp[0].stringValue));} 
         else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[0].stringValue)); exit(EXIT_FAILURE); };}
-#line 1732 "y.tab.c"
+#line 1749 "y.tab.c"
     break;
 
   case 18:
-#line 258 "file.y"
+#line 276 "file.y"
                 {printf("Erreur Ligne %d : mot-cle TABLE oublié \n",num_ligne); exit(EXIT_FAILURE);}
-#line 1738 "y.tab.c"
+#line 1755 "y.tab.c"
     break;
 
   case 19:
-#line 259 "file.y"
+#line 277 "file.y"
                    {printf("Erreur Ligne %d : Identifiant manquant ou mal formé ",num_ligne); exit(EXIT_FAILURE);}
-#line 1744 "y.tab.c"
+#line 1761 "y.tab.c"
     break;
 
   case 20:
-#line 261 "file.y"
+#line 279 "file.y"
                            {if (is_string_in_array(tables,(yyvsp[-1].stringValue),num_tables)) {
     int key=findKey(tablesChamps,(yyvsp[-1].stringValue),cle);
         int result = are_all_values_in_types((yyvsp[-1].stringValue),tablesChamps[key].champs, tablesChamps[key].num_values, strings,num_strings);
      if ((yyvsp[0].intValue)==1) {printf("Ligne %d : La table %s est vidée \n",num_ligne,(yyvsp[-1].stringValue));}; printf("Ligne %d : Suppression de lignes réussie depuis la table %s \n",num_ligne,(yyvsp[-1].stringValue));} 
         else { printf(" Erreur ligne %d: Pas de table %s dans la base de données \n",num_ligne,(yyvsp[-1].stringValue)); exit(EXIT_FAILURE); };}
-#line 1754 "y.tab.c"
+#line 1771 "y.tab.c"
     break;
 
   case 21:
-#line 267 "file.y"
+#line 285 "file.y"
            {(yyval.intValue)=0; }
-#line 1760 "y.tab.c"
+#line 1777 "y.tab.c"
     break;
 
   case 22:
-#line 268 "file.y"
+#line 286 "file.y"
               {(yyval.intValue)=1;printf(" Ligne %d: Champs selectionnes = %d \n",num_ligne,champs);}
-#line 1766 "y.tab.c"
+#line 1783 "y.tab.c"
     break;
 
   case 23:
-#line 270 "file.y"
+#line 288 "file.y"
                                  {(yyval.intValue)=0; if (predicat>1) printf("Ligne %d: %d prédicats dans la clause \n",num_ligne,predicat);}
-#line 1772 "y.tab.c"
+#line 1789 "y.tab.c"
     break;
 
   case 24:
-#line 270 "file.y"
+#line 288 "file.y"
                                                                                                                                    {(yyval.intValue)=1;}
-#line 1778 "y.tab.c"
+#line 1795 "y.tab.c"
     break;
 
   case 25:
-#line 271 "file.y"
+#line 289 "file.y"
                                                        {predicat++;add_string2(strings, (yyvsp[-2].stringValue), num_strings); num_strings++;}
-#line 1784 "y.tab.c"
+#line 1801 "y.tab.c"
     break;
 
   case 26:
-#line 272 "file.y"
+#line 290 "file.y"
                   {predicat++; add_string2(strings, (yyvsp[-2].stringValue), num_strings); num_strings++;}
-#line 1790 "y.tab.c"
+#line 1807 "y.tab.c"
     break;
 
   case 35:
-#line 279 "file.y"
+#line 297 "file.y"
                                             {num_champs++;}
-#line 1796 "y.tab.c"
+#line 1813 "y.tab.c"
     break;
 
   case 36:
-#line 280 "file.y"
+#line 298 "file.y"
                             {num_champs++;}
-#line 1802 "y.tab.c"
+#line 1819 "y.tab.c"
     break;
 
   case 37:
-#line 281 "file.y"
+#line 299 "file.y"
                         {num_champs++;}
-#line 1808 "y.tab.c"
+#line 1825 "y.tab.c"
     break;
 
   case 38:
-#line 282 "file.y"
+#line 300 "file.y"
           {num_champs++;}
-#line 1814 "y.tab.c"
+#line 1831 "y.tab.c"
     break;
 
   case 39:
-#line 283 "file.y"
+#line 301 "file.y"
          {num_champs++;}
-#line 1820 "y.tab.c"
+#line 1837 "y.tab.c"
     break;
 
   case 40:
-#line 284 "file.y"
+#line 302 "file.y"
      {num_champs++;}
-#line 1826 "y.tab.c"
+#line 1843 "y.tab.c"
     break;
 
   case 41:
-#line 285 "file.y"
+#line 303 "file.y"
                            { printf("Erreur ligne %d: Erreur d'insertion \n",num_ligne); exit(EXIT_FAILURE); }
-#line 1832 "y.tab.c"
+#line 1849 "y.tab.c"
     break;
 
   case 42:
-#line 287 "file.y"
+#line 305 "file.y"
                                    {colonnes+=1;add_string(strings, (yyvsp[-2].stringValue), num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], (yyvsp[-2].stringValue));num_strings++;
 add_string2(types, (yyvsp[-1].stringValue), num_types);strcpy(tablesChamps[cle].types[num_types], (yyvsp[-1].stringValue));num_types++; }
-#line 1839 "y.tab.c"
+#line 1856 "y.tab.c"
     break;
 
   case 43:
-#line 289 "file.y"
+#line 307 "file.y"
                                        {colonnes+=1;add_string(strings, (yyvsp[-2].stringValue), num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], (yyvsp[-2].stringValue));num_strings++;
 add_string2(types, (yyvsp[-1].stringValue), num_types);strcpy(tablesChamps[cle].types[num_types], (yyvsp[-1].stringValue));num_types++;
 }
-#line 1847 "y.tab.c"
+#line 1864 "y.tab.c"
     break;
 
   case 44:
-#line 292 "file.y"
+#line 310 "file.y"
                                                                                    {if (!is_string_in_array(tables,(yyvsp[-3].stringValue),num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,(yyvsp[-3].stringValue)); exit(EXIT_FAILURE);} else { 
 int i= check_field_array(tablesChamps,(yyvsp[-3].stringValue),(yyvsp[-1].stringValue),cle);
 colonnes+=1;
 add_string(strings, (yyvsp[-6].stringValue), num_strings,0);strcpy(tablesChamps[cle].champs[num_strings], (yyvsp[-6].stringValue)); num_strings++; 
 add_string2(types, "FOREIGN", num_types);strcpy(tablesChamps[cle].types[num_types], "FOREIGN");num_types++; }}
-#line 1857 "y.tab.c"
+#line 1874 "y.tab.c"
     break;
 
   case 45:
-#line 297 "file.y"
+#line 315 "file.y"
                                                                 {if (!is_string_in_array(tables,(yyvsp[-3].stringValue),num_tables)) {printf("Erreur Ligne %d : table %s n'existe pas \n",num_ligne,(yyvsp[-3].stringValue)); exit(EXIT_FAILURE);};
 colonnes+=1;
 int i= check_field_array(tablesChamps,(yyvsp[-3].stringValue),(yyvsp[-1].stringValue),cle);
 add_string(strings, (yyvsp[-6].stringValue), num_strings,0);num_strings++; 
 add_string(types, "FOREIGN", num_types,2);num_types++;}
-#line 1867 "y.tab.c"
+#line 1884 "y.tab.c"
     break;
 
   case 46:
-#line 303 "file.y"
+#line 321 "file.y"
                                 {if ((yyvsp[-1].intValue)>65535 ) {printf("Erreur ligne %d : taille de la chaine excède 65,535 ",num_ligne);exit(EXIT_FAILURE);} else {(yyval.stringValue)="VARCHAR";}}
-#line 1873 "y.tab.c"
+#line 1890 "y.tab.c"
     break;
 
   case 47:
-#line 304 "file.y"
+#line 322 "file.y"
       {(yyval.stringValue)="INT";}
-#line 1879 "y.tab.c"
+#line 1896 "y.tab.c"
     break;
 
   case 48:
-#line 305 "file.y"
+#line 323 "file.y"
                                  {(yyval.stringValue)="NUMERIC";}
-#line 1885 "y.tab.c"
+#line 1902 "y.tab.c"
     break;
 
   case 49:
-#line 306 "file.y"
+#line 324 "file.y"
            {printf("Erreur ligne %d : taille de la chaine non spécifiée ",num_ligne);exit(EXIT_FAILURE);}
-#line 1891 "y.tab.c"
+#line 1908 "y.tab.c"
     break;
 
   case 50:
-#line 307 "file.y"
+#line 325 "file.y"
                     {printf("Erreur ligne %d : parenthèse ouvrante oubliée ",num_ligne);exit(EXIT_FAILURE);}
-#line 1897 "y.tab.c"
+#line 1914 "y.tab.c"
     break;
 
   case 51:
-#line 308 "file.y"
+#line 326 "file.y"
         {printf("Erreur ligne %d : Type non reconnu \n ",num_ligne);}
-#line 1903 "y.tab.c"
+#line 1920 "y.tab.c"
     break;
 
   case 52:
-#line 310 "file.y"
+#line 328 "file.y"
                  {champs+=1; add_string(strings, (yyvsp[0].stringValue), num_strings,0); num_strings++;}
-#line 1909 "y.tab.c"
+#line 1926 "y.tab.c"
     break;
 
   case 53:
-#line 311 "file.y"
+#line 329 "file.y"
                    {champs+=1;add_string(strings, (yyvsp[0].stringValue), num_strings,0);num_strings++;}
-#line 1915 "y.tab.c"
+#line 1932 "y.tab.c"
     break;
 
   case 54:
-#line 312 "file.y"
+#line 330 "file.y"
                        { printf("Erreur ligne %d: Virgule manquante \n",num_ligne); exit(EXIT_FAILURE); }
-#line 1921 "y.tab.c"
+#line 1938 "y.tab.c"
     break;
 
   case 57:
-#line 314 "file.y"
+#line 332 "file.y"
                                      {printf("Erreur ligne %d : contrainte non valide ",num_ligne);exit(EXIT_FAILURE);}
-#line 1927 "y.tab.c"
+#line 1944 "y.tab.c"
     break;
 
 
-#line 1931 "y.tab.c"
+#line 1948 "y.tab.c"
 
       default: break;
     }
@@ -2159,7 +2176,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 315 "file.y"
+#line 333 "file.y"
 
 
 #include "lex.yy.c" 

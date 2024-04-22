@@ -7,9 +7,7 @@
 int yylex(void); 
 int yyerror(char*s); 
 
-int champs=0;
-int colonnes=0;
-int predicat=0;
+
 #define MAX_STRINGS 100 
 #define MAX_LENGTH 50  
 #define MAX_KEYS 10    
@@ -17,14 +15,19 @@ int predicat=0;
 
 char* strings[MAX_STRINGS];
 char* types[MAX_STRINGS];
-
 char* tables[MAX_LENGTH]; //table des tables
-int num_strings = 0;
-int num_types=0;
-int num_champs=0;
-int num_tables=0;
-int num_ligne=1;
-// enregistrement cle valeur pour stocker les tables et les nombs de champs
+
+int num_strings = 0; // chaines dans les requetes
+int num_types=0; // types dans les requetes de creation
+int num_champs=0; // nombre de champs
+int champs=0; // nombre de champs
+int colonnes=0; // nombre de colonnes
+int predicat=0; //nombre de predicats 
+int num_tables=0; // nombre de tables
+int num_ligne=1; // nombre de ligne
+
+
+// ⭐⭐ enregistrement cle valeur pour stocker les tables et les nombs de champs
 struct KeyValue {
     char key[100]; // Assuming maximum length of the key is 100 characters
     char champs[MAX_LENGTH][100]; // Assuming maximum length of each value is 100 characters
@@ -32,9 +35,12 @@ struct KeyValue {
     int num_values; // Number of values in the array
 };
 int cle=0; //nombre de clés/ enregistrements dans tablesChamps
-struct KeyValue tablesChamps[MAX_KEYS];
-// affichage du tableau des enregistrements
+struct KeyValue tablesChamps[MAX_KEYS]; // tableau d'enregistrement: décrit la base de données
+
+
 // HELP FUNCTIONS: manipulation des tableaux et des chaines
+
+// verifie si une chaine appartient a un tableau
 int is_string_in_array(char* strings[],char* str,int num_strings) {
     for (int i = 0; i < num_strings; i++) {
         if (strcmp(strings[i], str) == 0) {
@@ -43,6 +49,7 @@ int is_string_in_array(char* strings[],char* str,int num_strings) {
     }
     return 0; 
 }
+// ⭐⭐ affichage de la table des champs
 void displayArray(struct KeyValue array[], int size) {
     for (int i = 0; i < size; i++) {
          if (is_string_in_array(tables,array[i].key,num_tables)){
@@ -62,6 +69,7 @@ void displayArray(struct KeyValue array[], int size) {
     }
 }
 
+// ⭐⭐ verifie si toutes les chaines d'un tableau existent dans un autre tableau
 int are_all_values_in_types(char* table, char types[][100], int types_size, char* strings[], int num_strings) {
     for (int i = 0; i < num_strings; i++) {
         int found = 0;
@@ -79,12 +87,14 @@ int are_all_values_in_types(char* table, char types[][100], int types_size, char
     }
     return 1; // All values found in types array
 }
+// affichage des champs d'un enreigstrement clé valeur
 void display_champs(struct KeyValue kv) {
     printf("value array for key '%s':\n", kv.key);
     for (int i = 0; i < kv.num_values; i++) {
         printf("%s\t", kv.champs[i]);
     }
 }
+//ajout d'une chaine dans une table de chaine avec verification de duplicat: declenche une erreur
 void add_string(char* strings[], char* str,int num_strings,int choix ) {
     if (num_strings < MAX_STRINGS) {
         if (!is_string_in_array(strings,str,num_strings)) {
@@ -101,6 +111,7 @@ void add_string(char* strings[], char* str,int num_strings,int choix ) {
         printf("Erreur '%s'.\n", str);
     }
 }
+// verfie si un champ  existe dans une table ou non
 int check_field_array(struct KeyValue array[], char *table,char* field,int size){
     for (int i = 0; i < size; i++) {
         if (strcmp(array[i].key, table) == 0) {
@@ -116,10 +127,12 @@ int check_field_array(struct KeyValue array[], char *table,char* field,int size)
     exit(EXIT_FAILURE); 
     return -1;
 }
+//ajout simple d'une chaine dans une table de chaine sans verification de duplicat
 void add_string2(char* strings[], char* str,int num_strings ) {
     if (num_strings < MAX_STRINGS) {
         strings[num_strings] = strdup(str);}
 }
+//suppression d'une chaine d'un tableau
 void delete_string(char* strings[], char* str, int num_strings) {
     int i, j;
     for (i = 0; i < num_strings; i++) {
@@ -135,6 +148,7 @@ void delete_string(char* strings[], char* str, int num_strings) {
     // String not found
     printf("String '%s' not found in the array.\n", str);
 }
+// trouve la cle de la table dans le tableau d'entregistement
 int findKey(struct KeyValue array[], char *searchKey,int size){
     for (int i = 0; i < size; i++) {
         if (strcmp(array[i].key, searchKey) == 0) {
@@ -143,12 +157,14 @@ int findKey(struct KeyValue array[], char *searchKey,int size){
     }
     return -1;
 }
+// affichage simple d'un tableau  de chaines
 void display_strings(char* strings[], int num_strings) {
-    printf("Strings in the array:\n");
+    printf("Affichage des chaines du tableau:\n");
     for (int i = 0; i < num_strings; i++) {
         printf("%s\n", strings[i]);
     }
 }
+// vider un tableau
 void empty_array(char* strings[] ,int numstrings) {
     for (int i = 0; i < num_strings; i++) {
         free(strings[i]);
@@ -156,6 +172,7 @@ void empty_array(char* strings[] ,int numstrings) {
     }
     num_strings = 0; 
 }
+//compter le nombre de lignes dans un fichier txt
 int countLines(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
@@ -226,6 +243,7 @@ int countLines(const char *filename) {
 S: CMD POINTVIRGULE 
 | COMMENT {printf("Ligne %d : Commentaire \n ",num_ligne);}
 | CMD error { printf("Erreur Ligne %d : point virgule manquant \n",num_ligne); exit(EXIT_FAILURE);}
+
 CMD: 
 DESCRIBE {printf("Ligne %d : Description de la base de donnees \n",num_ligne); displayArray(tablesChamps,cle);}
 |/* selection */
