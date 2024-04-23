@@ -1,2 +1,0 @@
-create table asd (id INT , klm VARCHAR(255), id2 INT);
-insert into asd values (1,"34");

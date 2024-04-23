@@ -1,4 +1,6 @@
-/* SUJET SQL*/
+/* SUJET SQL
+/* SUJET SQL: Yosr BARGHOUTI et Mariem BEN SALAH 1 ING 01*/
+
 %{
 #include<stdio.h>
 #include <string.h>

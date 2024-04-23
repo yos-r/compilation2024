@@ -5,6 +5,6 @@ select * from asd ;
 select id from xyz where id = 23 ;
 update asd set id = 11;
 DROP TABLE  asd ;
-insert into xyz values(2, "234" ,2,"erer") ;
+insert into xyz values(2, 2 ,2,"erer") ;
 DELETE FROM xyz where id>1 or def<1;
 DESCRIBE ;

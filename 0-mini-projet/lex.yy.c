@@ -594,7 +594,7 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "file.l"
-/* SUJET SQL*/
+/* SUJET SQL: Yosr BARGHOUTI et Mariem BEN SALAH 1 ING 01*/
 #line 4 "file.l"
 #include <stdio.h>
 #include <string.h>

@@ -1,0 +1,2 @@
+create table xyz (id INT, abc NUMERIC(22), def VARCHAR(244),ghi VARCHAR(244));
+select id,abde from xyz ;

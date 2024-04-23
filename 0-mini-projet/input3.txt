@@ -1,0 +1,3 @@
+create table asd (id INT , klm INT, adr VARCHAR(254));
+drop table asd;
+select * from asd;

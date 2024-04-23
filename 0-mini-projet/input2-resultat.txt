@@ -1,0 +1,4 @@
+          Ligne 1: Colonnes de la table xyz = 4 
+Ligne 1 : Création de la table xyz réussie 
+   Ligne 2: Champs selectionnes = 2 
+  Erreur ligne 2: Le champ ' abde '  n'existe pas dans la table xyz

@@ -1,0 +1,4 @@
+          Ligne 1: Colonnes de la table asd = 3 
+Ligne 1 : Création de la table asd réussie 
+  Ligne 2 : Suppression de la table asd réussie
+   Erreur ligne 3: Pas de table asd dans la base de données 
